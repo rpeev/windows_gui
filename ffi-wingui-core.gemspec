@@ -1,4 +1,4 @@
-require_relative 'lib/ffi-wingui-core/common'
+require File.expand_path('../lib/ffi-wingui-core/common', __FILE__) # require_relative doesn't work here in ruby 1.9
 require 'rake'
 
 Gem::Specification.new do |s|
