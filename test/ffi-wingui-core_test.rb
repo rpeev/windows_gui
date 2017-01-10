@@ -1,5 +1,3 @@
-#!/usr/bin/env ruby
-
 require_relative '../lib/ffi-wingui-core/common'
 require 'minitest'
 require 'minitest/autorun'
