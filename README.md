@@ -1,12 +1,12 @@
-# ffi-wingui-core
+# windows_gui
 
-Ruby-FFI (x86) bindings to essential GUI-related Windows APIs
+Ruby FFI bindings to essential GUI related Windows APIs
 
 ![Screenshot](./screenshot.png)
 
 ## Install
 
-gem install ffi-wingui-core
+gem install windows_gui
 
 ## Use
 

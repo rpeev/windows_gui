@@ -1,6 +1,6 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 TARGETVER(WINVISTA,
 	L("This example requires Windows Vista or later\n\nRun anyway?")
@@ -10,7 +10,7 @@ WndExtra = Struct.new(
 	:hbmp
 )
 
-def onCreate(hwnd,
+def OnCreate(hwnd,
 	cs
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -76,7 +76,7 @@ ensure
 	info.pointer.free if info
 end
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DeleteObject(xtra[:hbmp])
@@ -84,7 +84,7 @@ def onDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
-def onItem1(verb,
+def OnItem1(verb,
 	hctl, hwnd
 )
 	hbar = GetMenu(hwnd)
@@ -95,7 +95,7 @@ def onItem1(verb,
 	0
 end
 
-def onItem2(verb,
+def OnItem2(verb,
 	hctl, hwnd
 )
 	MessageBox(hwnd,
@@ -107,7 +107,7 @@ def onItem2(verb,
 	0
 end
 
-def onItem3(verb,
+def OnItem3(verb,
 	hctl, hwnd
 )
 	hbar = GetMenu(hwnd)
@@ -118,7 +118,7 @@ def onItem3(verb,
 	0
 end
 
-def onItem4(verb,
+def OnItem4(verb,
 	hctl, hwnd
 )
 	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM4], ID[:ITEM5], ID[:ITEM4], 0)
@@ -126,7 +126,7 @@ def onItem4(verb,
 	0
 end
 
-def onItem5(verb,
+def OnItem5(verb,
 	hctl, hwnd
 )
 	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM4], ID[:ITEM5], ID[:ITEM5], 0)
@@ -134,7 +134,7 @@ def onItem5(verb,
 	0
 end
 
-def onItem6(verb,
+def OnItem6(verb,
 	hctl, hwnd
 )
 	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM6], ID[:ITEM7], ID[:ITEM6], 0)
@@ -142,7 +142,7 @@ def onItem6(verb,
 	0
 end
 
-def onItem7(verb,
+def OnItem7(verb,
 	hctl, hwnd
 )
 	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM6], ID[:ITEM7], ID[:ITEM7], 0)
@@ -150,7 +150,7 @@ def onItem7(verb,
 	0
 end
 
-def onItem8(verb,
+def OnItem8(verb,
 	hctl, hwnd
 )
 	MessageBox(hwnd,
@@ -162,7 +162,7 @@ def onItem8(verb,
 	0
 end
 
-def onItem9(verb,
+def OnItem9(verb,
 	hctl, hwnd
 )
 	hbar = GetMenu(hwnd)
@@ -205,9 +205,9 @@ begin
 
 		1
 	when WM_CREATE
-		onCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
+		OnCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 
 	when WM_COMMAND
 		id, verb = LOWORD(wParam), HIWORD(wParam)
@@ -215,23 +215,23 @@ begin
 
 		case id
 		when ID[:ITEM1]
-			onItem1(verb, hctl, hwnd)
+			OnItem1(verb, hctl, hwnd)
 		when ID[:ITEM2]
-			onItem2(verb, hctl, hwnd)
+			OnItem2(verb, hctl, hwnd)
 		when ID[:ITEM3]
-			onItem3(verb, hctl, hwnd)
+			OnItem3(verb, hctl, hwnd)
 		when ID[:ITEM4]
-			onItem4(verb, hctl, hwnd)
+			OnItem4(verb, hctl, hwnd)
 		when ID[:ITEM5]
-			onItem5(verb, hctl, hwnd)
+			OnItem5(verb, hctl, hwnd)
 		when ID[:ITEM6]
-			onItem6(verb, hctl, hwnd)
+			OnItem6(verb, hctl, hwnd)
 		when ID[:ITEM7]
-			onItem7(verb, hctl, hwnd)
+			OnItem7(verb, hctl, hwnd)
 		when ID[:ITEM8]
-			onItem8(verb, hctl, hwnd)
+			OnItem8(verb, hctl, hwnd)
 		when ID[:ITEM9]
-			onItem9(verb, hctl, hwnd)
+			OnItem9(verb, hctl, hwnd)
 		end
 	end
 
@@ -252,7 +252,7 @@ rescue
 end
 }
 
-def main
+def WinMain
 	Util.Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
@@ -262,9 +262,7 @@ def main
 		wc[:hInstance] = GetModuleHandle(nil)
 		wc[:hIcon] = LoadIcon(nil, IDI_APPLICATION)
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
-		wc[:hbrBackground] = FFI::Pointer.new(
-			((WINVER == WINXP) ? COLOR_MENUBAR : COLOR_MENU) + 1
-		)
+		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
 		PWSTR(APPNAME) { |className|
 			wc[:lpszClassName] = className
@@ -307,4 +305,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

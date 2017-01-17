@@ -1,9 +1,9 @@
+require_relative 'common'
 if __FILE__ == $0
 	require_relative 'kernel32'
 end
-require_relative 'common'
 
-module WinGUI
+module WindowsGUI
 	ffi_lib 'gdi32'
 	ffi_convention :stdcall
 

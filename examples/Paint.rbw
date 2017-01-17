@@ -1,18 +1,18 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 WndExtra = Struct.new(
 	:hfont
 )
 
-def onCreate(hwnd,
+def OnCreate(hwnd,
 	cs
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	LOGFONT.new { |lf|
-		lf[:lfHeight] = DPIAwareFontHeight(24)
+		lf[:lfHeight] = DPIAwareFontHeight(16)
 		lf[:lfItalic] = 1
 		lf[:lfFaceName].to_ptr.put_bytes(0, L('Verdana'))
 
@@ -22,7 +22,7 @@ def onCreate(hwnd,
 	0
 end
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DeleteObject(xtra[:hfont])
@@ -30,7 +30,7 @@ def onDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
-def onPaint(hwnd,
+def OnPaint(hwnd,
 	ps
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -68,14 +68,14 @@ begin
 
 		1
 	when WM_CREATE
-		onCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
+		OnCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 
 	when WM_PAINT
-		DoPaint(hwnd) { |ps| result = onPaint(hwnd, ps) }
+		DoPaint(hwnd) { |ps| result = OnPaint(hwnd, ps) }
 	when WM_PRINTCLIENT
-		DoPrintClient(hwnd, wParam) { |ps| result = onPaint(hwnd, ps) }
+		DoPrintClient(hwnd, wParam) { |ps| result = OnPaint(hwnd, ps) }
 	end
 
 	result || DefWindowProc(hwnd, uMsg, wParam, lParam)
@@ -95,7 +95,7 @@ rescue
 end
 }
 
-def main
+def WinMain
 	Util.Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
@@ -148,4 +148,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

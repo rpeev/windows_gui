@@ -1,12 +1,12 @@
 require 'ffi'
 
-WINGUI_VISUAL_STYLES = true unless defined?(WINGUI_VISUAL_STYLES)
-WINGUI_DPI_AWARE = true unless defined?(WINGUI_DPI_AWARE)
+WINDOWS_GUI_VISUAL_STYLES = true unless defined?(WINDOWS_GUI_VISUAL_STYLES)
+WINDOWS_GUI_DPI_AWARE = true unless defined?(WINDOWS_GUI_DPI_AWARE)
 
-module WinGUI
+module WindowsGUI
 	extend FFI::Library
 
-	VERSION = '1.0.2'
+	VERSION = '2.0.0'
 
 	module Util
 		def FormatException(ex)
@@ -30,14 +30,6 @@ module WinGUI
 		end
 
 		module_function :Id2RefTrack
-
-		unless FFI::Struct.respond_to?(:by_ref)
-			class << FFI::Struct
-				def by_ref(*args)
-					FFI::Type::Builtin::POINTER
-				end
-			end
-		end
 
 		module ScopedStruct
 			def new(*args)
@@ -152,8 +144,4 @@ module WinGUI
 			:right, :long,
 			:bottom, :long
 	end
-end
-
-if __FILE__ == $0
-	puts WinGUI::VERSION
 end

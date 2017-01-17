@@ -1,5 +1,6 @@
-require_relative 'lib/ffi-wingui-core/common'
 require 'rake/testtask'
+
+require_relative 'lib/windows_gui/common'
 
 Rake::TestTask.new do |t|
   t.test_files = FileList[
@@ -9,12 +10,12 @@ end
 
 desc 'Build gem'
 task :build => [:test] do |t|
-  system "gem build ffi-wingui-core.gemspec"
+  system "gem build windows_gui.gemspec"
 end
 
 desc 'Push gem'
 task :push => [:build] do |t|
-  system "gem push ffi-wingui-core-#{WinGUI::VERSION}.gem"
+  system "gem push windows_gui-#{WindowsGUI::VERSION}.gem"
 end
 
 task :default => [:test]

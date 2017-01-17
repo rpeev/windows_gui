@@ -1,12 +1,12 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
-def onMinMax(hwnd,
+def OnMinMax(hwnd,
 	minmax
 )
 	minmax[:ptMinTrackSize][:x], minmax[:ptMinTrackSize][:y] = DPIAwareXY(400, 300)
@@ -22,10 +22,10 @@ WindowProc = FFI::Function.new(:long,
 begin
 	result = case uMsg
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 
 	when WM_GETMINMAXINFO
-		onMinMax(hwnd, MINMAXINFO.new(FFI::Pointer.new(lParam)))
+		OnMinMax(hwnd, MINMAXINFO.new(FFI::Pointer.new(lParam)))
 	end
 
 	result || DefWindowProc(hwnd, uMsg, wParam, lParam)
@@ -45,16 +45,14 @@ rescue
 end
 }
 
-def main
+def WinMain
 	WNDCLASSEX.new { |wc|
 		wc[:cbSize] = wc.size
 		wc[:lpfnWndProc] = WindowProc
 		wc[:hInstance] = GetModuleHandle(nil)
 		wc[:hIcon] = LoadIcon(nil, IDI_APPLICATION)
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
-		wc[:hbrBackground] = FFI::Pointer.new(
-			((WINVER == WINXP) ? COLOR_MENUBAR : COLOR_MENU) + 1
-		)
+		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
 		PWSTR(APPNAME) { |className|
 			wc[:lpszClassName] = className
@@ -97,4 +95,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

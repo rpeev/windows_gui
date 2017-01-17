@@ -1,6 +1,6 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 WndExtra = Struct.new(
 	:hpen,
@@ -8,7 +8,7 @@ WndExtra = Struct.new(
 	:scribbles
 )
 
-def onCreate(hwnd,
+def OnCreate(hwnd,
 	cs
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -25,7 +25,7 @@ def onCreate(hwnd,
 	0
 end
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DeleteObject(xtra[:hpen])
@@ -33,7 +33,7 @@ def onDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
-def onPaint(hwnd,
+def OnPaint(hwnd,
 	ps
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -51,7 +51,7 @@ def onPaint(hwnd,
 	0
 end
 
-def onLButtonDown(hwnd,
+def OnLButtonDown(hwnd,
 	x, y
 )
 	SetCapture(hwnd)
@@ -70,7 +70,7 @@ def onLButtonDown(hwnd,
 	0
 end
 
-def onLButtonUp(hwnd,
+def OnLButtonUp(hwnd,
 	x, y
 )
 	ReleaseCapture()
@@ -78,7 +78,7 @@ def onLButtonUp(hwnd,
 	0
 end
 
-def onMouseMove(hwnd,
+def OnMouseMove(hwnd,
 	x, y
 )
 	return 0 if GetCapture() != hwnd
@@ -99,7 +99,7 @@ def onMouseMove(hwnd,
 	0
 end
 
-def onRButtonDown(hwnd,
+def OnRButtonDown(hwnd,
 	x, y
 )
 	return 0 if GetCapture() == hwnd
@@ -129,22 +129,22 @@ begin
 
 		1
 	when WM_CREATE
-		onCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
+		OnCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 
 	when WM_PAINT
-		DoPaint(hwnd) { |ps| result = onPaint(hwnd, ps) }
+		DoPaint(hwnd) { |ps| result = OnPaint(hwnd, ps) }
 
 	when WM_LBUTTONDOWN
-		onLButtonDown(hwnd, LOSHORT(lParam), HISHORT(lParam))
+		OnLButtonDown(hwnd, LOSHORT(lParam), HISHORT(lParam))
 	when WM_LBUTTONUP
-		onLButtonUp(hwnd, LOSHORT(lParam), HISHORT(lParam))
+		OnLButtonUp(hwnd, LOSHORT(lParam), HISHORT(lParam))
 	when WM_MOUSEMOVE
-		onMouseMove(hwnd, LOSHORT(lParam), HISHORT(lParam))
+		OnMouseMove(hwnd, LOSHORT(lParam), HISHORT(lParam))
 
 	when WM_RBUTTONDOWN
-		onRButtonDown(hwnd, LOSHORT(lParam), HISHORT(lParam))
+		OnRButtonDown(hwnd, LOSHORT(lParam), HISHORT(lParam))
 	end
 
 	result || DefWindowProc(hwnd, uMsg, wParam, lParam)
@@ -164,7 +164,7 @@ rescue
 end
 }
 
-def main
+def WinMain
 	Util.Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
@@ -217,4 +217,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

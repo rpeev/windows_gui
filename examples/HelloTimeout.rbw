@@ -1,6 +1,6 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 unless respond_to?(:MessageBoxTimeout)
 	MessageBox(nil,

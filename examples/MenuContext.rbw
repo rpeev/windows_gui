@@ -1,12 +1,12 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 WndExtra = Struct.new(
 	:hcm
 )
 
-def onCreate(hwnd,
+def OnCreate(hwnd,
 	cs
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -17,7 +17,7 @@ def onCreate(hwnd,
 	0
 end
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DestroyMenu(xtra[:hcm])
@@ -25,7 +25,7 @@ def onDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
-def onContextMenu(hwnd,
+def OnContextMenu(hwnd,
 	x, y
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -41,7 +41,7 @@ def onContextMenu(hwnd,
 	0
 end
 
-def onItem1(verb,
+def OnItem1(verb,
 	hctl, hwnd
 )
 	MessageBox(hwnd,
@@ -69,19 +69,19 @@ begin
 
 		1
 	when WM_CREATE
-		onCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
+		OnCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 
 	when WM_CONTEXTMENU
-		onContextMenu(hwnd, LOSHORT(lParam), HISHORT(lParam))
+		OnContextMenu(hwnd, LOSHORT(lParam), HISHORT(lParam))
 	when WM_COMMAND
 		id, verb = LOWORD(wParam), HIWORD(wParam)
 		hctl = FFI::Pointer.new(lParam)
 
 		case id
 		when ID[:ITEM1]
-			onItem1(verb, hctl, hwnd)
+			OnItem1(verb, hctl, hwnd)
 		end
 	end
 
@@ -102,7 +102,7 @@ rescue
 end
 }
 
-def main
+def WinMain
 	Util.Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
@@ -112,9 +112,7 @@ def main
 		wc[:hInstance] = GetModuleHandle(nil)
 		wc[:hIcon] = LoadIcon(nil, IDI_APPLICATION)
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
-		wc[:hbrBackground] = FFI::Pointer.new(
-			((WINVER == WINXP) ? COLOR_MENUBAR : COLOR_MENU) + 1
-		)
+		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
 		PWSTR(APPNAME) { |className|
 			wc[:lpszClassName] = className
@@ -157,4 +155,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

@@ -1,9 +1,9 @@
-WINGUI_VISUAL_STYLES = false
-WINGUI_DPI_AWARE = false
+WINDOWS_GUI_VISUAL_STYLES = false
+WINDOWS_GUI_DPI_AWARE = false
 
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 MessageBox(nil,
 	L('Hello, world!'),

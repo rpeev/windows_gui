@@ -1,6 +1,6 @@
 require_relative 'common'
 
-module WinGUI
+module WindowsGUI
 	ffi_lib FFI::Library::LIBC
 	ffi_convention :cdecl
 

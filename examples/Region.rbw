@@ -1,8 +1,8 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
-def onCreate(hwnd,
+def OnCreate(hwnd,
 	cs
 )
 	SetWindowRgn(hwnd,
@@ -13,7 +13,7 @@ def onCreate(hwnd,
 	0
 end
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
@@ -24,9 +24,9 @@ WindowProc = FFI::Function.new(:long,
 begin
 	result = case uMsg
 	when WM_CREATE
-		onCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
+		OnCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 	end
 
 	result || DefWindowProc(hwnd, uMsg, wParam, lParam)
@@ -46,14 +46,14 @@ rescue
 end
 }
 
-def main
+def WinMain
 	WNDCLASSEX.new { |wc|
 		wc[:cbSize] = wc.size
 		wc[:lpfnWndProc] = WindowProc
 		wc[:hInstance] = GetModuleHandle(nil)
 		wc[:hIcon] = LoadIcon(nil, IDI_APPLICATION)
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
-		wc[:hbrBackground] = FFI::Pointer.new(COLOR_DESKTOP + 1)
+		wc[:hbrBackground] = FFI::Pointer.new(COLOR_APPWORKSPACE + 1)q
 
 		PWSTR(APPNAME) { |className|
 			wc[:lpszClassName] = className
@@ -96,4 +96,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

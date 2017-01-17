@@ -1,6 +1,6 @@
 require_relative 'common'
 
-module WinGUI
+module WindowsGUI
 	ffi_lib 'kernel32'
 	ffi_convention :stdcall
 
@@ -193,7 +193,7 @@ module WinGUI
 		raise 'Visual styles already enabled' if
 			COMMON_CONTROLS_ACTCTX[:activated]
 
-		manifest = "#{ENV['TEMP']}/Ruby.FFI.WinGUI.Common-Controls.manifest"
+		manifest = "#{ENV['TEMP']}/windows_gui.manifest"
 
 		File.open(manifest, 'w:utf-8') { |file|
 			file << <<-XML
@@ -242,7 +242,7 @@ module WinGUI
 
 	module_function :EnableVisualStyles
 
-	EnableVisualStyles() if WINGUI_VISUAL_STYLES
+	EnableVisualStyles() if WINDOWS_GUI_VISUAL_STYLES
 
 	attach_function :MulDiv, [
 		:int,

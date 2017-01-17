@@ -1,13 +1,13 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 WndExtra = Struct.new(
 	:haccel,
 	:hmf
 )
 
-def onCreate(hwnd,
+def OnCreate(hwnd,
 	cs
 )
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
@@ -62,7 +62,7 @@ def onCreate(hwnd,
 	0
 end
 
-def onDestroy(hwnd)
+def OnDestroy(hwnd)
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DestroyAcceleratorTable(xtra[:haccel])
@@ -71,7 +71,7 @@ def onDestroy(hwnd)
 	PostQuitMessage(0); 0
 end
 
-def onActivate(hwnd,
+def OnActivate(hwnd,
 	state, minimized,
 	hother
 )
@@ -80,7 +80,7 @@ def onActivate(hwnd,
 	0
 end
 
-def onSysItem1(lParam,
+def OnSysItem1(lParam,
 	hwnd
 )
 	MessageBox(hwnd,
@@ -92,7 +92,7 @@ def onSysItem1(lParam,
 	0
 end
 
-def onItem1(verb,
+def OnItem1(verb,
 	hctl, hwnd
 )
 	MessageBox(hwnd,
@@ -116,7 +116,7 @@ def onItem1(verb,
 	0
 end
 
-def onButton1(verb,
+def OnButton1(verb,
 	hctl, hwnd
 )
 	MessageBox(hwnd,
@@ -155,12 +155,12 @@ begin
 
 		1
 	when WM_CREATE
-		onCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
+		OnCreate(hwnd, CREATESTRUCT.new(FFI::Pointer.new(lParam)))
 	when WM_DESTROY
-		onDestroy(hwnd)
+		OnDestroy(hwnd)
 
 	when WM_ACTIVATE
-		onActivate(hwnd,
+		OnActivate(hwnd,
 			LOWORD(wParam), HIWORD(wParam) != 0,
 			FFI::Pointer.new(lParam)
 		)
@@ -170,7 +170,7 @@ begin
 
 		case id
 		when SYSID[:ITEM1]
-			onSysItem1(lParam, hwnd)
+			OnSysItem1(lParam, hwnd)
 		end
 	when WM_COMMAND
 		id, verb = LOWORD(wParam), HIWORD(wParam)
@@ -178,9 +178,9 @@ begin
 
 		case id
 		when ID[:ITEM1]
-			onItem1(verb, hctl, hwnd)
+			OnItem1(verb, hctl, hwnd)
 		when ID[:BUTTON1]
-			onButton1(verb, hctl, hwnd)
+			OnButton1(verb, hctl, hwnd)
 		end
 	end
 
@@ -201,7 +201,7 @@ rescue
 end
 }
 
-def main
+def WinMain
 	Util.Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
@@ -211,9 +211,7 @@ def main
 		wc[:hInstance] = GetModuleHandle(nil)
 		wc[:hIcon] = LoadIcon(nil, IDI_APPLICATION)
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
-		wc[:hbrBackground] = FFI::Pointer.new(
-			((WINVER == WINXP) ? COLOR_MENUBAR : COLOR_MENU) + 1
-		)
+		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
 		PWSTR(APPNAME) { |className|
 			wc[:lpszClassName] = className
@@ -260,4 +258,4 @@ rescue
 	); exit(1)
 end
 
-main
+WinMain()

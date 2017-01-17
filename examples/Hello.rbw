@@ -1,6 +1,6 @@
-require 'ffi-wingui-core'
+require 'windows_gui'
 
-include WinGUI
+include WindowsGUI
 
 MessageBox(nil,
 	L('Hello, world!'),

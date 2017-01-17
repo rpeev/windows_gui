@@ -1,10 +1,10 @@
+require_relative 'common'
 if __FILE__ == $0
 	require_relative 'kernel32'
 	require_relative 'gdi32'
 end
-require_relative 'common'
 
-module WinGUI
+module WindowsGUI
 	ffi_lib 'user32'
 	ffi_convention :stdcall
 
@@ -132,7 +132,7 @@ module WinGUI
 
 		], :int
 
-		Detonate(0, :SetProcessDPIAware) if WINGUI_DPI_AWARE
+		Detonate(0, :SetProcessDPIAware) if WINDOWS_GUI_DPI_AWARE
 	end
 
 	attach_function :GetWindowDC, [
