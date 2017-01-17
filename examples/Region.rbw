@@ -53,7 +53,7 @@ def WinMain
 		wc[:hInstance] = GetModuleHandle(nil)
 		wc[:hIcon] = LoadIcon(nil, IDI_APPLICATION)
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
-		wc[:hbrBackground] = FFI::Pointer.new(COLOR_APPWORKSPACE + 1)q
+		wc[:hbrBackground] = FFI::Pointer.new(COLOR_APPWORKSPACE + 1)
 
 		PWSTR(APPNAME) { |className|
 			wc[:lpszClassName] = className

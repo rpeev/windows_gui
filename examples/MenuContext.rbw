@@ -12,7 +12,7 @@ def OnCreate(hwnd,
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	xtra[:hcm] = CreatePopupMenu()
-		AppendMenu(xtra[:hcm], MF_STRING, ID[:ITEM1], L('Item&1'))
+		AppendMenu(xtra[:hcm], MF_STRING, CMD[:ITEM1], L('Item&1'))
 
 	0
 end
@@ -80,7 +80,7 @@ begin
 		hctl = FFI::Pointer.new(lParam)
 
 		case id
-		when ID[:ITEM1]
+		when CMD[:ITEM1]
 			OnItem1(verb, hctl, hwnd)
 		end
 	end

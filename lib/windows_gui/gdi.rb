@@ -1,6 +1,6 @@
 require_relative 'common'
 if __FILE__ == $0
-	require_relative 'kernel32'
+	require_relative 'kernel'
 end
 
 module WindowsGUI

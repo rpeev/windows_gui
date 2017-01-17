@@ -1,7 +1,7 @@
 require_relative 'common'
 if __FILE__ == $0
-	require_relative 'kernel32'
-	require_relative 'gdi32'
+	require_relative 'kernel'
+	require_relative 'gdi'
 end
 
 module WindowsGUI
@@ -1487,10 +1487,10 @@ module WindowsGUI
 
 	SC_CONTEXTHELP = 0xf180
 
-	(SYSID = {}).
+	(SYSCMD = {}).
 		instance_variable_set(:@last, 0xf00)
 
-	class << SYSID
+	class << SYSCMD
 		private :[]=, :store
 
 		def [](key)
@@ -1502,10 +1502,10 @@ module WindowsGUI
 
 	WM_SYSCOMMAND = 0x0112
 
-	(ID = {}).
+	(CMD = {}).
 		instance_variable_set(:@last, WM_APP)
 
-	class << ID
+	class << CMD
 		private :[]=, :store
 
 		def [](key)

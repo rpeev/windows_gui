@@ -13,18 +13,18 @@ def OnCreate(hwnd,
 	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	hsys = GetSystemMenu(hwnd, 0)
-		InsertMenu(hsys, SC_CLOSE, MF_STRING, SYSID[:ITEM1], L("Item&1\tAlt+S"))
+		InsertMenu(hsys, SC_CLOSE, MF_STRING, SYSCMD[:ITEM1], L("Item&1\tAlt+S"))
 		InsertMenu(hsys, SC_CLOSE, MF_SEPARATOR, 0, nil)
 
 	hbar = CreateMenu()
 		hmenu1 = CreatePopupMenu()
-			AppendMenu(hmenu1, MF_STRING, ID[:ITEM1], L("Item&1\tAlt+I"))
+			AppendMenu(hmenu1, MF_STRING, CMD[:ITEM1], L("Item&1\tAlt+I"))
 		AppendMenu(hbar, MF_POPUP, hmenu1.to_i, L('Menu&1'))
 	SetMenu(hwnd, hbar)
 
 	accels = [
-		[FVIRTKEY | FALT, 'S'.ord, SYSID[:ITEM1]],
-		[FVIRTKEY | FALT, 'I'.ord, ID[:ITEM1]]
+		[FVIRTKEY | FALT, 'S'.ord, SYSCMD[:ITEM1]],
+		[FVIRTKEY | FALT, 'I'.ord, CMD[:ITEM1]]
 	]
 
 	FFI::MemoryPointer.new(ACCEL, accels.count) { |paccels|
@@ -48,7 +48,7 @@ def OnCreate(hwnd,
 		0, L('Button'), L('&Button1'), WS_CHILD | WS_CLIPSIBLINGS |
 			WS_VISIBLE | WS_TABSTOP,
 		*DPIAwareXY(10, 10, 100, 25),
-		hwnd, FFI::Pointer.new(ID[:BUTTON1]), GetModuleHandle(nil), nil
+		hwnd, FFI::Pointer.new(CMD[:BUTTON1]), GetModuleHandle(nil), nil
 	)
 
 	SendMessage(hbtn1, WM_SETFONT, xtra[:hmf].to_i, 1)
@@ -56,7 +56,7 @@ def OnCreate(hwnd,
 	CreateWindowEx(
 		0, L('Static'), L(''), WS_CHILD | WS_CLIPSIBLINGS,
 		0, 0, 0, 0,
-		hwnd, FFI::Pointer.new(ID[:FOCUS]), GetModuleHandle(nil), nil
+		hwnd, FFI::Pointer.new(CMD[:FOCUS]), GetModuleHandle(nil), nil
 	)
 
 	0
@@ -75,7 +75,7 @@ def OnActivate(hwnd,
 	state, minimized,
 	hother
 )
-	SetFocus(GetDlgItem(hwnd, ID[:FOCUS])) if state != WA_INACTIVE
+	SetFocus(GetDlgItem(hwnd, CMD[:FOCUS])) if state != WA_INACTIVE
 
 	0
 end
@@ -110,8 +110,8 @@ def OnItem1(verb,
 	raise 'WM_COMMAND hctl must be NULL for menu/accelerator' unless
 		hctl.null?
 
-	EnableWindow(GetDlgItem(hwnd, ID[:BUTTON1]), 1)
-	EnableMenuItem(GetMenu(hwnd), ID[:ITEM1], MF_GRAYED)
+	EnableWindow(GetDlgItem(hwnd, CMD[:BUTTON1]), 1)
+	EnableMenuItem(GetMenu(hwnd), CMD[:ITEM1], MF_GRAYED)
 
 	0
 end
@@ -133,7 +133,7 @@ def OnButton1(verb,
 	raise 'WM_COMMAND hctl must NOT be NULL for control' if
 		hctl.null?
 
-	EnableMenuItem(GetMenu(hwnd), ID[:ITEM1], MF_ENABLED)
+	EnableMenuItem(GetMenu(hwnd), CMD[:ITEM1], MF_ENABLED)
 	EnableWindow(hctl, 0)
 
 	0
@@ -169,7 +169,7 @@ begin
 		id = wParam & 0xfff0
 
 		case id
-		when SYSID[:ITEM1]
+		when SYSCMD[:ITEM1]
 			OnSysItem1(lParam, hwnd)
 		end
 	when WM_COMMAND
@@ -177,9 +177,9 @@ begin
 		hctl = FFI::Pointer.new(lParam)
 
 		case id
-		when ID[:ITEM1]
+		when CMD[:ITEM1]
 			OnItem1(verb, hctl, hwnd)
-		when ID[:BUTTON1]
+		when CMD[:BUTTON1]
 			OnButton1(verb, hctl, hwnd)
 		end
 	end

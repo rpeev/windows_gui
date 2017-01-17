@@ -13,31 +13,31 @@ def OnCreate(hwnd,
 
 	hbar = CreateMenu()
 		hmenu1 = CreatePopupMenu()
-			AppendMenu(hmenu1, MF_STRING, ID[:ITEM1], L('Item&1'))
-			SetMenuDefaultItem(hmenu1, ID[:ITEM1], 0)
+			AppendMenu(hmenu1, MF_STRING, CMD[:ITEM1], L('Item&1'))
+			SetMenuDefaultItem(hmenu1, CMD[:ITEM1], 0)
 
-			AppendMenu(hmenu1, MF_STRING | MF_GRAYED, ID[:ITEM2], L('Item&2'))
-			AppendMenu(hmenu1, MF_STRING | MF_CHECKED, ID[:ITEM3], L('Item&3'))
+			AppendMenu(hmenu1, MF_STRING | MF_GRAYED, CMD[:ITEM2], L('Item&2'))
+			AppendMenu(hmenu1, MF_STRING | MF_CHECKED, CMD[:ITEM3], L('Item&3'))
 
 			AppendMenu(hmenu1, MF_SEPARATOR, 0, nil)
 
 			AppendMenu(hmenu1, MF_STRING | MF_CHECKED | MFT_RADIOCHECK,
-				ID[:ITEM4], L('Item&4'))
-			AppendMenu(hmenu1, MF_STRING, ID[:ITEM5], L('Item&5'))
+				CMD[:ITEM4], L('Item&4'))
+			AppendMenu(hmenu1, MF_STRING, CMD[:ITEM5], L('Item&5'))
 
 			AppendMenu(hmenu1, MF_SEPARATOR, 0, nil)
 
 			hmenu2 = CreatePopupMenu()
 				AppendMenu(hmenu2, MF_STRING | MF_CHECKED | MFT_RADIOCHECK,
-					ID[:ITEM6], L('Item&6'))
-				AppendMenu(hmenu2, MF_STRING, ID[:ITEM7], L('Item&7'))
+					CMD[:ITEM6], L('Item&6'))
+				AppendMenu(hmenu2, MF_STRING, CMD[:ITEM7], L('Item&7'))
 			AppendMenu(hmenu1, MF_POPUP, hmenu2.to_i, L('Menu&2'))
 		AppendMenu(hbar, MF_POPUP, hmenu1.to_i, L('Menu&1'))
 
-		AppendMenu(hbar, MF_STRING, ID[:ITEM8], L('Item&8!'))
+		AppendMenu(hbar, MF_STRING, CMD[:ITEM8], L('Item&8!'))
 
 		hmenu3 = CreatePopupMenu()
-			AppendMenu(hmenu3, MF_STRING, ID[:ITEM9], L('Item&9'))
+			AppendMenu(hmenu3, MF_STRING, CMD[:ITEM9], L('Item&9'))
 		AppendMenu(hbar, MF_POPUP | MF_RIGHTJUSTIFY, hmenu3.to_i, L('Menu&3'))
 	SetMenu(hwnd, hbar)
 
@@ -54,9 +54,9 @@ def OnItem1(verb,
 	hctl, hwnd
 )
 	hbar = GetMenu(hwnd)
-	i2grayed = (GetMenuState(hbar, ID[:ITEM2], 0) & MF_GRAYED) == MF_GRAYED
+	i2grayed = (GetMenuState(hbar, CMD[:ITEM2], 0) & MF_GRAYED) == MF_GRAYED
 
-	EnableMenuItem(hbar, ID[:ITEM2], (i2grayed) ? MF_ENABLED : MF_GRAYED)
+	EnableMenuItem(hbar, CMD[:ITEM2], (i2grayed) ? MF_ENABLED : MF_GRAYED)
 
 	0
 end
@@ -77,9 +77,9 @@ def OnItem3(verb,
 	hctl, hwnd
 )
 	hbar = GetMenu(hwnd)
-	i3checked = (GetMenuState(hbar, ID[:ITEM3], 0) & MF_CHECKED) == MF_CHECKED
+	i3checked = (GetMenuState(hbar, CMD[:ITEM3], 0) & MF_CHECKED) == MF_CHECKED
 
-	CheckMenuItem(hbar, ID[:ITEM3], (i3checked) ? MF_UNCHECKED : MF_CHECKED)
+	CheckMenuItem(hbar, CMD[:ITEM3], (i3checked) ? MF_UNCHECKED : MF_CHECKED)
 
 	0
 end
@@ -87,7 +87,7 @@ end
 def OnItem4(verb,
 	hctl, hwnd
 )
-	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM4], ID[:ITEM5], ID[:ITEM4], 0)
+	CheckMenuRadioItem(GetMenu(hwnd), CMD[:ITEM4], CMD[:ITEM5], CMD[:ITEM4], 0)
 
 	0
 end
@@ -95,7 +95,7 @@ end
 def OnItem5(verb,
 	hctl, hwnd
 )
-	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM4], ID[:ITEM5], ID[:ITEM5], 0)
+	CheckMenuRadioItem(GetMenu(hwnd), CMD[:ITEM4], CMD[:ITEM5], CMD[:ITEM5], 0)
 
 	0
 end
@@ -103,7 +103,7 @@ end
 def OnItem6(verb,
 	hctl, hwnd
 )
-	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM6], ID[:ITEM7], ID[:ITEM6], 0)
+	CheckMenuRadioItem(GetMenu(hwnd), CMD[:ITEM6], CMD[:ITEM7], CMD[:ITEM6], 0)
 
 	0
 end
@@ -111,7 +111,7 @@ end
 def OnItem7(verb,
 	hctl, hwnd
 )
-	CheckMenuRadioItem(GetMenu(hwnd), ID[:ITEM6], ID[:ITEM7], ID[:ITEM7], 0)
+	CheckMenuRadioItem(GetMenu(hwnd), CMD[:ITEM6], CMD[:ITEM7], CMD[:ITEM7], 0)
 
 	0
 end
@@ -132,12 +132,12 @@ def OnItem9(verb,
 	hctl, hwnd
 )
 	hbar = GetMenu(hwnd)
-	i2grayed = (GetMenuState(hbar, ID[:ITEM2], 0) & MF_GRAYED) == MF_GRAYED
-	i3checked = (GetMenuState(hbar, ID[:ITEM3], 0) & MF_CHECKED) == MF_CHECKED
-	i4checked = (GetMenuState(hbar, ID[:ITEM4], 0) & MF_CHECKED) == MF_CHECKED
-	i5checked = (GetMenuState(hbar, ID[:ITEM5], 0) & MF_CHECKED) == MF_CHECKED
-	i6checked = (GetMenuState(hbar, ID[:ITEM6], 0) & MF_CHECKED) == MF_CHECKED
-	i7checked = (GetMenuState(hbar, ID[:ITEM7], 0) & MF_CHECKED) == MF_CHECKED
+	i2grayed = (GetMenuState(hbar, CMD[:ITEM2], 0) & MF_GRAYED) == MF_GRAYED
+	i3checked = (GetMenuState(hbar, CMD[:ITEM3], 0) & MF_CHECKED) == MF_CHECKED
+	i4checked = (GetMenuState(hbar, CMD[:ITEM4], 0) & MF_CHECKED) == MF_CHECKED
+	i5checked = (GetMenuState(hbar, CMD[:ITEM5], 0) & MF_CHECKED) == MF_CHECKED
+	i6checked = (GetMenuState(hbar, CMD[:ITEM6], 0) & MF_CHECKED) == MF_CHECKED
+	i7checked = (GetMenuState(hbar, CMD[:ITEM7], 0) & MF_CHECKED) == MF_CHECKED
 
 	MessageBox(hwnd,
 		L("
@@ -180,23 +180,23 @@ begin
 		hctl = FFI::Pointer.new(lParam)
 
 		case id
-		when ID[:ITEM1]
+		when CMD[:ITEM1]
 			OnItem1(verb, hctl, hwnd)
-		when ID[:ITEM2]
+		when CMD[:ITEM2]
 			OnItem2(verb, hctl, hwnd)
-		when ID[:ITEM3]
+		when CMD[:ITEM3]
 			OnItem3(verb, hctl, hwnd)
-		when ID[:ITEM4]
+		when CMD[:ITEM4]
 			OnItem4(verb, hctl, hwnd)
-		when ID[:ITEM5]
+		when CMD[:ITEM5]
 			OnItem5(verb, hctl, hwnd)
-		when ID[:ITEM6]
+		when CMD[:ITEM6]
 			OnItem6(verb, hctl, hwnd)
-		when ID[:ITEM7]
+		when CMD[:ITEM7]
 			OnItem7(verb, hctl, hwnd)
-		when ID[:ITEM8]
+		when CMD[:ITEM8]
 			OnItem8(verb, hctl, hwnd)
-		when ID[:ITEM9]
+		when CMD[:ITEM9]
 			OnItem9(verb, hctl, hwnd)
 		end
 	end
