@@ -1,3 +1,4 @@
+require 'weakref'
 require 'ffi'
 
 WINDOWS_GUI_VISUAL_STYLES = true unless defined?(WINDOWS_GUI_VISUAL_STYLES)
@@ -22,10 +23,14 @@ module WindowsGUI
 		Id2Ref = {}
 
 		def Id2RefTrack(object)
-			Id2Ref[object.object_id] = object
+			Id2Ref[object.object_id] = WeakRef.new(object)
+
+			p "Object id #{object.object_id} of #{object} stored in Id2Ref track hash" if $DEBUG
 
 			ObjectSpace.define_finalizer(object, -> id {
 				Id2Ref.delete(id)
+
+				p "Object id #{id} deleted from Id2Ref track hash" if $DEBUG
 			})
 		end
 
