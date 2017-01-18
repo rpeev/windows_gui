@@ -735,7 +735,7 @@ module WindowsGUI
 
 	callback :PROPENUMPROCEX, [
 		:pointer,
-		:buffer_in,
+		:pointer,
 		:long, # HANDLE (void *) in the original prototype
 		:ulong
 	], :int

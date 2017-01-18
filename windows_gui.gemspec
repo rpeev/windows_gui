@@ -6,8 +6,8 @@ Gem::Specification.new do |s|
   s.name = 'windows_gui'
   s.version = WindowsGUI::VERSION
 
-  s.summary = 'Ruby FFI bindings to essential GUI related Windows APIs'
-  s.description = 'Ruby FFI bindings to essential GUI related Windows APIs'
+  s.summary = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
+  s.description = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
   s.homepage = 'https://github.com/rpeev/windows_gui'
 
   s.authors = ['Radoslav Peev']

@@ -1,6 +1,6 @@
 # windows_gui
 
-Ruby FFI bindings to essential GUI related Windows APIs
+Ruby FFI (x86) bindings to essential GUI related Windows APIs
 
 ![Screenshot](./screenshot.png)
 
