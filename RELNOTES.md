@@ -1,5 +1,9 @@
 # Release Notes
 
+## 3.0.1
+
+Add recent Windows version info
+
 ## 3.0.0
 
 Improve code (remove Util namespace and rename some constants)
