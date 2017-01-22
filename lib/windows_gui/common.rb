@@ -1,7 +1,7 @@
 require 'weakref'
 require 'ffi'
 
-WINDOWS_GUI_VERSION = '3.0.1'
+WINDOWS_GUI_VERSION = '3.0.2'
 
 WINDOWS_GUI_VISUAL_STYLES = true unless defined?(WINDOWS_GUI_VISUAL_STYLES)
 WINDOWS_GUI_DPI_AWARE = true unless defined?(WINDOWS_GUI_DPI_AWARE)
