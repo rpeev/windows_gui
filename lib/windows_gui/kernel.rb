@@ -121,6 +121,18 @@ module WindowsGUI
 
 	WINVER = HIWORD(NTDDI_VERSION)
 
+	WINNAME = case WINVER
+	when WIN2K; 'WIN2K (Windows 2000)'
+	when WINXP; 'WINXP (Windows XP)'
+	when WINVISTA; 'WINVISTA (Windows Vista)'
+	when WIN7; 'WIN7 (Windows 7)'
+	when WIN8; 'WIN8 (Windows 8)'
+	when WINBLUE; 'WINBLUE (Windows 8.1)'
+	when WIN10; 'WIN10 (Windows 10)'
+	else
+		'unknown Windows version'
+	end
+
 	def TARGETVER(version, message)
 		version = MAKELONG(0x0000, version) if version < 0xffff
 
