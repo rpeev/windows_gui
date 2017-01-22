@@ -11,7 +11,7 @@ WndExtra = Struct.new(
 def OnCreate(hwnd,
 	cs
 )
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	LOGPEN.new { |lp|
 		lp[:lopnWidth][:x] = DPIAwareX(10)
@@ -26,7 +26,7 @@ def OnCreate(hwnd,
 end
 
 def OnDestroy(hwnd)
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DeleteObject(xtra[:hpen])
 
@@ -36,7 +36,7 @@ end
 def OnPaint(hwnd,
 	ps
 )
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	UseObjects(ps[:hdc], xtra[:hpen]) {
 		xtra[:scribbles].each { |scribble|
@@ -56,7 +56,7 @@ def OnLButtonDown(hwnd,
 )
 	SetCapture(hwnd)
 
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	xtra[:curpos] = [x, y]
 	xtra[:scribbles] << [[x, y]]
@@ -83,7 +83,7 @@ def OnMouseMove(hwnd,
 )
 	return 0 if GetCapture() != hwnd
 
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	xtra[:scribbles].last << [x, y]
 
@@ -104,7 +104,7 @@ def OnRButtonDown(hwnd,
 )
 	return 0 if GetCapture() == hwnd
 
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	xtra[:scribbles].clear
 
@@ -152,7 +152,7 @@ rescue SystemExit => ex
 	PostQuitMessage(ex.status)
 rescue
 	case MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ABORTRETRYIGNORE | MB_ICONERROR
 	)
@@ -165,7 +165,7 @@ end
 }
 
 def WinMain
-	Util.Id2RefTrack(xtra = WndExtra.new)
+	Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
 		wc[:cbSize] = wc.size
@@ -211,7 +211,7 @@ def WinMain
 	}
 rescue
 	MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ICONERROR
 	); exit(1)

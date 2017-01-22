@@ -102,7 +102,7 @@ module WindowsGUI
 	FF_DECORATIVE = 5 << 4
 
 	class LOGFONT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:lfHeight, :long,
@@ -143,7 +143,7 @@ module WindowsGUI
 	HS_DIAGCROSS = 5
 
 	class LOGBRUSH < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:lbStyle, :uint,
@@ -177,7 +177,7 @@ module WindowsGUI
 	PS_JOIN_ROUND = 0x0000_0000
 
 	class LOGPEN < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:lopnStyle, :uint,

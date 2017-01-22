@@ -9,7 +9,7 @@ WndExtra = Struct.new(
 def OnCreate(hwnd,
 	cs
 )
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	LOGFONT.new { |lf|
 		lf[:lfHeight] = DPIAwareFontHeight(16)
@@ -23,7 +23,7 @@ def OnCreate(hwnd,
 end
 
 def OnDestroy(hwnd)
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DeleteObject(xtra[:hfont])
 
@@ -33,7 +33,7 @@ end
 def OnPaint(hwnd,
 	ps
 )
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	SetBkColor(ps[:hdc], RGB(255, 0, 0))
 	SetTextColor(ps[:hdc], RGB(255, 255, 255))
@@ -83,7 +83,7 @@ rescue SystemExit => ex
 	PostQuitMessage(ex.status)
 rescue
 	case MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ABORTRETRYIGNORE | MB_ICONERROR
 	)
@@ -96,7 +96,7 @@ end
 }
 
 def WinMain
-	Util.Id2RefTrack(xtra = WndExtra.new)
+	Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
 		wc[:cbSize] = wc.size
@@ -142,7 +142,7 @@ def WinMain
 	}
 rescue
 	MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ICONERROR
 	); exit(1)

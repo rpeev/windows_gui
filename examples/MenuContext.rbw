@@ -9,7 +9,7 @@ WndExtra = Struct.new(
 def OnCreate(hwnd,
 	cs
 )
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	xtra[:hcm] = CreatePopupMenu()
 		AppendMenu(xtra[:hcm], MF_STRING, CMD[:ITEM1], L('Item&1'))
@@ -18,7 +18,7 @@ def OnCreate(hwnd,
 end
 
 def OnDestroy(hwnd)
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	DestroyMenu(xtra[:hcm])
 
@@ -28,7 +28,7 @@ end
 def OnContextMenu(hwnd,
 	x, y
 )
-	xtra = Util::Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
+	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
 	POINT.new { |point|
 		GetCursorPos(point)
@@ -90,7 +90,7 @@ rescue SystemExit => ex
 	PostQuitMessage(ex.status)
 rescue
 	case MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ABORTRETRYIGNORE | MB_ICONERROR
 	)
@@ -103,7 +103,7 @@ end
 }
 
 def WinMain
-	Util.Id2RefTrack(xtra = WndExtra.new)
+	Id2RefTrack(xtra = WndExtra.new)
 
 	WNDCLASSEX.new { |wc|
 		wc[:cbSize] = wc.size
@@ -149,7 +149,7 @@ def WinMain
 	}
 rescue
 	MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ICONERROR
 	); exit(1)

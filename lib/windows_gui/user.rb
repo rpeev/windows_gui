@@ -206,7 +206,7 @@ module WindowsGUI
 	], :int
 
 	class NONCLIENTMETRICS < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout(*[
 			:cbSize, :uint,
@@ -461,7 +461,7 @@ module WindowsGUI
 	COLOR_MENU = 4
 
 	class WNDCLASSEX < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:cbSize, :uint,
@@ -625,7 +625,7 @@ module WindowsGUI
 	], :pointer
 
 	class DLGTEMPLATE < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:style, :ulong,
@@ -921,7 +921,7 @@ module WindowsGUI
 	SIF_DISABLENOSCROLL = 0x0008
 
 	class SCROLLINFO < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:cbSize, :uint,
@@ -1029,7 +1029,7 @@ module WindowsGUI
 	], :int
 
 	class PAINTSTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:hdc, :pointer,
@@ -1136,7 +1136,7 @@ module WindowsGUI
 	MOUSEEVENTF_VIRTUALDESK = 0x4000
 
 	class MOUSEINPUT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:dx, :long,
@@ -1153,7 +1153,7 @@ module WindowsGUI
 	KEYEVENTF_UNICODE = 0x0004
 
 	class KEYBDINPUT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:wVk, :ushort,
@@ -1164,7 +1164,7 @@ module WindowsGUI
 	end
 
 	class HARDWAREINPUT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:uMsg, :ulong,
@@ -1173,7 +1173,7 @@ module WindowsGUI
 	end
 
 	class INPUT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:type, :ulong,
@@ -1234,7 +1234,7 @@ module WindowsGUI
 	HWND_BROADCAST = FFI::Pointer.new(0xffff)
 
 	class CREATESTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:lpCreateParams, :pointer,
@@ -1270,7 +1270,7 @@ module WindowsGUI
 	WM_ENDSESSION = 0x0016
 
 	class STYLESTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:styleOld, :ulong,
@@ -1299,7 +1299,7 @@ module WindowsGUI
 	WM_SHOWWINDOW = 0x0018
 
 	class MINMAXINFO < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:ptReserved, POINT,
@@ -1312,7 +1312,7 @@ module WindowsGUI
 	WM_GETMINMAXINFO = 0x0024
 
 	class WINDOWPOS < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:hwnd, :pointer,
@@ -1518,7 +1518,7 @@ module WindowsGUI
 	WM_COMMAND = 0x0111
 
 	class NMHDR < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:hwndFrom, :pointer,
@@ -1540,7 +1540,7 @@ module WindowsGUI
 	WM_CHARTOITEM = 0x002f
 
 	class DELETEITEMSTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:CtlType, :uint,
@@ -1553,7 +1553,7 @@ module WindowsGUI
 	WM_DELETEITEM = 0x002d
 
 	class COMPAREITEMSTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:CtlType, :uint,
@@ -1577,7 +1577,7 @@ module WindowsGUI
 	ODT_COMBOBOX = 3
 
 	class MEASUREITEMSTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:CtlType, :uint,
@@ -1610,7 +1610,7 @@ module WindowsGUI
 	ODS_COMBOBOXEDIT = 0x1000
 
 	class DRAWITEMSTRUCT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:CtlType, :uint,
@@ -1672,7 +1672,7 @@ module WindowsGUI
 	], :void
 
 	class MSG < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:hwnd, :pointer,
@@ -1862,7 +1862,7 @@ module WindowsGUI
 	MIIM_BITMAP = 0x0000_0080
 
 	class MENUITEMINFO < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:cbSize, :uint,
@@ -2022,7 +2022,7 @@ module WindowsGUI
 	VK_VOLUME_DOWN = 0xae
 
 	class ACCEL < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:fVirt, :uchar,
@@ -2401,7 +2401,7 @@ module WindowsGUI
 	CBS_NOINTEGRALHEIGHT = 0x0400
 
 	class COMBOBOXINFO < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:cbSize, :ulong,
@@ -2530,7 +2530,7 @@ module WindowsGUI
 	OBJID_CLIENT = 0xffff_fffc - 0x1_0000_0000
 
 	class SCROLLBARINFO < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:cbSize, :ulong,

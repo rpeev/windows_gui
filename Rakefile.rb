@@ -15,7 +15,7 @@ end
 
 desc 'Push gem'
 task :push => [:build] do |t|
-  system "gem push windows_gui-#{WindowsGUI::VERSION}.gem"
+  system "gem push windows_gui-#{WINDOWS_GUI_VERSION}.gem"
 end
 
 task :default => [:test]

@@ -58,7 +58,7 @@ rescue SystemExit => ex
 	PostQuitMessage(ex.status)
 rescue
 	case MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ABORTRETRYIGNORE | MB_ICONERROR
 	)
@@ -114,7 +114,7 @@ def WinMain
 	}
 rescue
 	MessageBox(hwnd,
-		L(Util.FormatException($!)),
+		L(FormatException($!)),
 		APPNAME,
 		MB_ICONERROR
 	); exit(1)

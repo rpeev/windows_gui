@@ -4,7 +4,7 @@ require_relative 'lib/windows_gui/common'
 
 Gem::Specification.new do |s|
   s.name = 'windows_gui'
-  s.version = WindowsGUI::VERSION
+  s.version = WINDOWS_GUI_VERSION
 
   s.summary = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
   s.description = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'

@@ -1,60 +1,58 @@
 require 'weakref'
 require 'ffi'
 
+WINDOWS_GUI_VERSION = '3.0.0'
+
 WINDOWS_GUI_VISUAL_STYLES = true unless defined?(WINDOWS_GUI_VISUAL_STYLES)
 WINDOWS_GUI_DPI_AWARE = true unless defined?(WINDOWS_GUI_DPI_AWARE)
 
 module WindowsGUI
 	extend FFI::Library
 
-	VERSION = '2.0.0'
+	def FormatException(ex)
+		str, trace = ex.to_s, ex.backtrace
 
-	module Util
-		def FormatException(ex)
-			str, trace = ex.to_s, ex.backtrace
+		str << "\n\n-- backtrace --\n\n" << trace.join("\n") if trace
 
-			str << "\n\n-- backtrace --\n\n" << trace.join("\n") if trace
+		str
+	end
 
-			str
-		end
+	module_function :FormatException
 
-		module_function :FormatException
+	Id2Ref = {}
 
-		Id2Ref = {}
+	def Id2RefTrack(object)
+		Id2Ref[object.object_id] = WeakRef.new(object)
 
-		def Id2RefTrack(object)
-			Id2Ref[object.object_id] = WeakRef.new(object)
+		p "Object id #{object.object_id} of #{object} stored in Id2Ref track hash" if $DEBUG
 
-			p "Object id #{object.object_id} of #{object} stored in Id2Ref track hash" if $DEBUG
+		ObjectSpace.define_finalizer(object, -> id {
+			Id2Ref.delete(id)
 
-			ObjectSpace.define_finalizer(object, -> id {
-				Id2Ref.delete(id)
+			p "Object id #{id} deleted from Id2Ref track hash" if $DEBUG
+		})
+	end
 
-				p "Object id #{id} deleted from Id2Ref track hash" if $DEBUG
-			})
-		end
+	module_function :Id2RefTrack
 
-		module_function :Id2RefTrack
+	module AutoFFIStructClassSupport
+		def new(*args)
+			raise ArgumentError, 'Cannot accept both arguments and a block' if
+				args.length > 0 && block_given?
 
-		module ScopedStruct
-			def new(*args)
-				raise ArgumentError, 'Cannot accept both arguments and a block' if
-					args.length > 0 && block_given?
+			struct = super
 
-				struct = super
+			return struct unless block_given?
 
-				return struct unless block_given?
+			begin
+				yield struct
+			ensure
+				struct.pointer.free
 
-				begin
-					yield struct
-				ensure
-					struct.pointer.free
-
-					p "Native memory for #{struct} freed" if $DEBUG
-				end
-
-				nil
+				p "Native memory for #{struct} freed" if $DEBUG
 			end
+
+			nil
 		end
 	end
 
@@ -125,7 +123,7 @@ module WindowsGUI
 	APPNAME = L(File.basename($0, '.rbw'))
 
 	class POINT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:x, :long,
@@ -133,7 +131,7 @@ module WindowsGUI
 	end
 
 	class SIZE < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:cx, :long,
@@ -141,7 +139,7 @@ module WindowsGUI
 	end
 
 	class RECT < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:left, :long,

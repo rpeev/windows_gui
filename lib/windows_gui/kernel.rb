@@ -33,7 +33,7 @@ module WindowsGUI
 	module_function :Detonate, :DetonateLastError
 
 	class OSVERSIONINFOEX < FFI::Struct
-		extend Util::ScopedStruct
+		extend AutoFFIStructClassSupport
 
 		layout \
 			:dwOSVersionInfoSize, :ulong,
@@ -138,7 +138,7 @@ module WindowsGUI
 
 	if WINVER >= WINXP
 		class ACTCTX < FFI::Struct
-			extend Util::ScopedStruct
+			extend AutoFFIStructClassSupport
 
 			layout \
 				:cbSize, :ulong,
@@ -184,6 +184,12 @@ module WindowsGUI
 				COMMON_CONTROLS_ACTCTX[:handle] == INVALID_HANDLE_VALUE
 
 			COMMON_CONTROLS_ACTCTX[:cookie].free
+
+			COMMON_CONTROLS_ACTCTX[:handle] = INVALID_HANDLE_VALUE
+			COMMON_CONTROLS_ACTCTX[:cookie] = 0
+			COMMON_CONTROLS_ACTCTX[:activated] = false
+
+			p "Visual styles cleanup, COMMON_CONTROLS_ACTCTX is #{COMMON_CONTROLS_ACTCTX}" if $DEBUG
 		}
 	end
 
@@ -238,6 +244,8 @@ module WindowsGUI
 		}
 
 		COMMON_CONTROLS_ACTCTX[:activated] = true
+
+		p "Visual styles init, COMMON_CONTROLS_ACTCTX is #{COMMON_CONTROLS_ACTCTX}" if $DEBUG
 	end
 
 	module_function :EnableVisualStyles
