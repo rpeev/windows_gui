@@ -11,7 +11,7 @@ def OnCreate(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
-	LOGFONT.new { |lf|
+	UsingFFIStructs(LOGFONT.new) { |lf|
 		lf[:lfHeight] = DPIAwareFontHeight(16)
 		lf[:lfItalic] = 1
 		lf[:lfFaceName].to_ptr.put_bytes(0, L('Verdana'))
@@ -38,8 +38,8 @@ def OnPaint(hwnd,
 	SetBkColor(ps[:hdc], RGB(255, 0, 0))
 	SetTextColor(ps[:hdc], RGB(255, 255, 255))
 
-	UseObjects(ps[:hdc], xtra[:hfont]) {
-		RECT.new { |rect|
+	UsingGDIObjects(ps[:hdc], xtra[:hfont]) {
+		UsingFFIStructs(RECT.new) { |rect|
 			GetClientRect(hwnd, rect)
 
 			DrawText(ps[:hdc],
@@ -98,7 +98,7 @@ end
 def WinMain
 	Id2RefTrack(xtra = WndExtra.new)
 
-	WNDCLASSEX.new { |wc|
+	UsingFFIStructs(WNDCLASSEX.new) { |wc|
 		wc[:cbSize] = wc.size
 		wc[:style] = CS_HREDRAW | CS_VREDRAW
 		wc[:lpfnWndProc] = WindowProc
@@ -108,7 +108,7 @@ def WinMain
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
 		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
-		PWSTR(APPNAME) { |className|
+		UsingFFIMemoryPointers(PWSTR(APPNAME)) { |className|
 			wc[:lpszClassName] = className
 
 			DetonateLastError(0, :RegisterClassEx,
@@ -130,7 +130,7 @@ def WinMain
 
 	AnimateWindow(hwnd, 1000, AW_ACTIVATE | AW_BLEND)
 
-	MSG.new { |msg|
+	UsingFFIStructs(MSG.new) { |msg|
 		until DetonateLastError(-1, :GetMessage,
 			msg, nil, 0, 0
 		) == 0

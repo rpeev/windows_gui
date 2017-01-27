@@ -1,4 +1,6 @@
-require_relative 'common'
+if __FILE__ == $0
+	require_relative 'common'
+end
 
 module WindowsGUI
 	ffi_lib FFI::Library::LIBC
@@ -6,5 +8,5 @@ module WindowsGUI
 
 	attach_function :windows_gui_wcslen, :wcslen, [
 		:buffer_in
-	], :uint
+	], :size_t
 end

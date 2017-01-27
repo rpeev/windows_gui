@@ -1,4 +1,7 @@
-require_relative 'common'
+if __FILE__ == $0
+	require_relative 'common'
+	require_relative 'libc'
+end
 
 module WindowsGUI
 	ffi_lib 'kernel32'
@@ -12,29 +15,7 @@ module WindowsGUI
 
 	], :ulong
 
-	def Detonate(on, name, *args)
-		raise "#{name} failed" if
-			(failed = [*on].include?(result = send(name, *args)))
-
-		result
-	ensure
-		yield failed if block_given?
-	end
-
-	def DetonateLastError(on, name, *args)
-		raise "#{name} failed (last error: #{GetLastError()})" if
-			(failed = [*on].include?(result = send(name, *args)))
-
-		result
-	ensure
-		yield failed if block_given?
-	end
-
-	module_function :Detonate, :DetonateLastError
-
 	class OSVERSIONINFOEX < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:dwOSVersionInfoSize, :ulong,
 			:dwMajorVersion, :ulong,
@@ -53,15 +34,14 @@ module WindowsGUI
 		OSVERSIONINFOEX.by_ref
 	], :int
 
-	OSVERSION = OSVERSIONINFOEX.new.tap { |ovi|
-		at_exit { OSVERSION.pointer.free }
+	OSVERSION = OSVERSIONINFOEX.new
 
-		ovi[:dwOSVersionInfoSize] = ovi.size
+	at_exit { OSVERSION.pointer.free }
 
-		DetonateLastError(0, :GetVersionEx,
-			ovi
-		)
-	}
+	OSVERSION[:dwOSVersionInfoSize] = OSVERSION.size
+	DetonateLastError(0, :GetVersionEx,
+		OSVERSION
+	)
 
 	NTDDI_WIN2K = 0x0500_0000
 
@@ -144,7 +124,8 @@ module WindowsGUI
 			) == IDNO
 	end
 
-	module_function :TARGETVER
+	module_function \
+		:TARGETVER
 
 	attach_function :GetModuleHandle, :GetModuleHandleW, [
 		:buffer_in
@@ -160,8 +141,6 @@ module WindowsGUI
 
 	if WINVER >= WINXP
 		class ACTCTX < FFI::Struct
-			extend AutoFFIStructClassSupport
-
 			layout \
 				:cbSize, :ulong,
 				:dwFlags, :ulong,
@@ -205,13 +184,14 @@ module WindowsGUI
 			ReleaseActCtx(COMMON_CONTROLS_ACTCTX[:handle]) unless
 				COMMON_CONTROLS_ACTCTX[:handle] == INVALID_HANDLE_VALUE
 
-			COMMON_CONTROLS_ACTCTX[:cookie].free
+			COMMON_CONTROLS_ACTCTX[:cookie].free unless
+				COMMON_CONTROLS_ACTCTX[:cookie] == FFI::Pointer::NULL
 
 			COMMON_CONTROLS_ACTCTX[:handle] = INVALID_HANDLE_VALUE
-			COMMON_CONTROLS_ACTCTX[:cookie] = 0
+			COMMON_CONTROLS_ACTCTX[:cookie] = FFI::Pointer::NULL
 			COMMON_CONTROLS_ACTCTX[:activated] = false
 
-			p "Visual styles cleanup, COMMON_CONTROLS_ACTCTX is #{COMMON_CONTROLS_ACTCTX}" if $DEBUG
+			STDERR.puts "Visual styles cleanup (COMMON_CONTROLS_ACTCTX: #{COMMON_CONTROLS_ACTCTX})" if $DEBUG
 		}
 	end
 
@@ -243,10 +223,10 @@ module WindowsGUI
 			XML
 		}
 
-		ACTCTX.new { |ac|
+		UsingFFIStructs(ACTCTX.new) { |ac|
 			ac[:cbSize] = ac.size
 
-			PWSTR(L(manifest)) { |source|
+			UsingFFIMemoryPointers(PWSTR(L(manifest))) { |source|
 				ac[:lpSource] = source
 
 				COMMON_CONTROLS_ACTCTX[:handle] =
@@ -258,19 +238,18 @@ module WindowsGUI
 
 		DetonateLastError(0, :ActivateActCtx,
 			COMMON_CONTROLS_ACTCTX[:handle], COMMON_CONTROLS_ACTCTX[:cookie]
-		) { |failed|
-			next unless failed
-
+		) {
 			ReleaseActCtx(COMMON_CONTROLS_ACTCTX[:handle])
 			COMMON_CONTROLS_ACTCTX[:handle] = INVALID_HANDLE_VALUE
 		}
 
 		COMMON_CONTROLS_ACTCTX[:activated] = true
 
-		p "Visual styles init, COMMON_CONTROLS_ACTCTX is #{COMMON_CONTROLS_ACTCTX}" if $DEBUG
+		STDERR.puts "Visual styles init (COMMON_CONTROLS_ACTCTX: #{COMMON_CONTROLS_ACTCTX})" if $DEBUG
 	end
 
-	module_function :EnableVisualStyles
+	module_function \
+		:EnableVisualStyles
 
 	EnableVisualStyles() if WINDOWS_GUI_VISUAL_STYLES
 

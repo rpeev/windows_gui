@@ -1,5 +1,6 @@
-require_relative 'common'
 if __FILE__ == $0
+	require_relative 'common'
+	require_relative 'libc'
 	require_relative 'kernel'
 	require_relative 'gdi'
 end
@@ -72,7 +73,8 @@ module WindowsGUI
 			rect[:top] > rect[:bottom]
 	end
 
-	module_function :NormalizeRect
+	module_function \
+		:NormalizeRect
 
 	attach_function :DrawFocusRect, [
 		:pointer,
@@ -131,9 +133,20 @@ module WindowsGUI
 		attach_function :SetProcessDPIAware, [
 
 		], :int
-
-		Detonate(0, :SetProcessDPIAware) if WINDOWS_GUI_DPI_AWARE
 	end
+
+	def DeclareDPIAware
+		return unless WINVER >= WINVISTA
+
+		Detonate(0, :SetProcessDPIAware)
+
+		STDERR.puts "DPI aware init"
+	end
+
+	module_function \
+		:DeclareDPIAware
+
+	DeclareDPIAware() if WINDOWS_GUI_DPI_AWARE
 
 	attach_function :GetWindowDC, [
 		:pointer
@@ -148,7 +161,7 @@ module WindowsGUI
 		:pointer
 	], :int
 
-	def UseWindowDC(hwnd)
+	def UsingWindowDC(hwnd)
 		hdc = DetonateLastError(FFI::Pointer::NULL, :GetWindowDC,
 			hwnd
 		)
@@ -160,7 +173,7 @@ module WindowsGUI
 		end
 	end
 
-	def UseDC(hwnd)
+	def UsingDC(hwnd)
 		hdc = DetonateLastError(FFI::Pointer::NULL, :GetDC,
 			hwnd
 		)
@@ -172,9 +185,11 @@ module WindowsGUI
 		end
 	end
 
-	module_function :UseWindowDC, :UseDC
+	module_function \
+		:UsingWindowDC,
+		:UsingDC
 
-	UseDC(nil) { |hdc|
+	UsingDC(nil) { |hdc|
 		DPIX = GetDeviceCaps(hdc, LOGPIXELSX)
 		DPIY = GetDeviceCaps(hdc, LOGPIXELSY)
 	}
@@ -196,7 +211,10 @@ module WindowsGUI
 		}
 	end
 
-	module_function :DPIAwareX, :DPIAwareY, :DPIAwareXY
+	module_function \
+		:DPIAwareX,
+		:DPIAwareY,
+		:DPIAwareXY
 
 	SM_CXSCREEN = 0
 	SM_CYSCREEN = 1
@@ -206,8 +224,6 @@ module WindowsGUI
 	], :int
 
 	class NONCLIENTMETRICS < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout(*[
 			:cbSize, :uint,
 			:iBorderWidth, :int,
@@ -461,8 +477,6 @@ module WindowsGUI
 	COLOR_MENU = 4
 
 	class WNDCLASSEX < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:cbSize, :uint,
 			:style, :uint,
@@ -625,8 +639,6 @@ module WindowsGUI
 	], :pointer
 
 	class DLGTEMPLATE < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:style, :ulong,
 			:dwExtendedStyle, :ulong,
@@ -921,8 +933,6 @@ module WindowsGUI
 	SIF_DISABLENOSCROLL = 0x0008
 
 	class SCROLLINFO < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:cbSize, :uint,
 			:fMask, :uint,
@@ -1029,8 +1039,6 @@ module WindowsGUI
 	], :int
 
 	class PAINTSTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:hdc, :pointer,
 			:fErase, :int,
@@ -1053,7 +1061,7 @@ module WindowsGUI
 	def DoPaint(hwnd)
 		return unless GetUpdateRect(hwnd, nil, 0) != 0
 
-		PAINTSTRUCT.new { |ps|
+		UsingFFIStructs(PAINTSTRUCT.new) { |ps|
 			DetonateLastError(FFI::Pointer::NULL, :BeginPaint,
 				hwnd, ps
 			)
@@ -1067,7 +1075,7 @@ module WindowsGUI
 	end
 
 	def DoPrintClient(hwnd, wParam)
-		PAINTSTRUCT.new { |ps|
+		UsingFFIStructs(PAINTSTRUCT.new) { |ps|
 			ps[:hdc] = FFI::Pointer.new(wParam)
 			ps[:fErase] = 1
 			GetClientRect(hwnd, ps[:rcPaint])
@@ -1076,7 +1084,9 @@ module WindowsGUI
 		}
 	end
 
-	module_function :DoPaint, :DoPrintClient
+	module_function \
+		:DoPaint,
+		:DoPrintClient
 
 	attach_function :SetCapture, [
 		:pointer
@@ -1136,8 +1146,6 @@ module WindowsGUI
 	MOUSEEVENTF_VIRTUALDESK = 0x4000
 
 	class MOUSEINPUT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:dx, :long,
 			:dy, :long,
@@ -1153,8 +1161,6 @@ module WindowsGUI
 	KEYEVENTF_UNICODE = 0x0004
 
 	class KEYBDINPUT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:wVk, :ushort,
 			:wScan, :ushort,
@@ -1164,8 +1170,6 @@ module WindowsGUI
 	end
 
 	class HARDWAREINPUT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:uMsg, :ulong,
 			:wParamL, :ushort,
@@ -1173,8 +1177,6 @@ module WindowsGUI
 	end
 
 	class INPUT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:type, :ulong,
 
@@ -1234,8 +1236,6 @@ module WindowsGUI
 	HWND_BROADCAST = FFI::Pointer.new(0xffff)
 
 	class CREATESTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:lpCreateParams, :pointer,
 			:hInstance, :pointer,
@@ -1270,8 +1270,6 @@ module WindowsGUI
 	WM_ENDSESSION = 0x0016
 
 	class STYLESTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:styleOld, :ulong,
 			:styleNew, :ulong
@@ -1299,8 +1297,6 @@ module WindowsGUI
 	WM_SHOWWINDOW = 0x0018
 
 	class MINMAXINFO < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:ptReserved, POINT,
 			:ptMaxSize, POINT,
@@ -1312,8 +1308,6 @@ module WindowsGUI
 	WM_GETMINMAXINFO = 0x0024
 
 	class WINDOWPOS < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:hwnd, :pointer,
 			:hwndInsertAfter, :pointer,
@@ -1518,8 +1512,6 @@ module WindowsGUI
 	WM_COMMAND = 0x0111
 
 	class NMHDR < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:hwndFrom, :pointer,
 			:idFrom, :uint,
@@ -1540,8 +1532,6 @@ module WindowsGUI
 	WM_CHARTOITEM = 0x002f
 
 	class DELETEITEMSTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:CtlType, :uint,
 			:CtlID, :uint,
@@ -1553,8 +1543,6 @@ module WindowsGUI
 	WM_DELETEITEM = 0x002d
 
 	class COMPAREITEMSTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:CtlType, :uint,
 			:CtlID, :uint,
@@ -1577,8 +1565,6 @@ module WindowsGUI
 	ODT_COMBOBOX = 3
 
 	class MEASUREITEMSTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:CtlType, :uint,
 			:CtlID, :uint,
@@ -1610,8 +1596,6 @@ module WindowsGUI
 	ODS_COMBOBOXEDIT = 0x1000
 
 	class DRAWITEMSTRUCT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:CtlType, :uint,
 			:CtlID, :uint,
@@ -1672,8 +1656,6 @@ module WindowsGUI
 	], :void
 
 	class MSG < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:hwnd, :pointer,
 			:message, :uint,
@@ -1862,8 +1844,6 @@ module WindowsGUI
 	MIIM_BITMAP = 0x0000_0080
 
 	class MENUITEMINFO < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:cbSize, :uint,
 			:fMask, :uint,
@@ -2022,8 +2002,6 @@ module WindowsGUI
 	VK_VOLUME_DOWN = 0xae
 
 	class ACCEL < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:fVirt, :uchar,
 			:key, :ushort,
@@ -2401,8 +2379,6 @@ module WindowsGUI
 	CBS_NOINTEGRALHEIGHT = 0x0400
 
 	class COMBOBOXINFO < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:cbSize, :ulong,
 			:rcItem, RECT,
@@ -2530,8 +2506,6 @@ module WindowsGUI
 	OBJID_CLIENT = 0xffff_fffc - 0x1_0000_0000
 
 	class SCROLLBARINFO < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:cbSize, :ulong,
 			:rcScrollBar, RECT,

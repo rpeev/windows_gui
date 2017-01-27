@@ -1,20 +1,20 @@
 require 'rake'
 
-require_relative 'lib/windows_gui/common'
+require_relative 'lib/windows_gui'
 
-Gem::Specification.new do |s|
-  s.name = 'windows_gui'
-  s.version = WINDOWS_GUI_VERSION
+Gem::Specification.new do |spec|
+  spec.name = 'windows_gui'
+  spec.version = WINDOWS_GUI_VERSION
 
-  s.summary = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
-  s.description = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
-  s.homepage = 'https://github.com/rpeev/windows_gui'
+  spec.summary = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
+  spec.description = 'Ruby FFI (x86) bindings to essential GUI related Windows APIs'
+  spec.homepage = 'https://github.com/rpeev/windows_gui'
 
-  s.authors = ['Radoslav Peev']
-  s.email = ['rpeev@ymail.com']
-  s.licenses = ['MIT']
+  spec.authors = ['Radoslav Peev']
+  spec.email = ['rpeev@ymail.com']
+  spec.licenses = ['MIT']
 
-  s.files = FileList[
+  spec.files = FileList[
     'LICENSE',
     'README.md', 'screenshot.png',
     'RELNOTES.md',
@@ -22,6 +22,6 @@ Gem::Specification.new do |s|
     'lib/windows_gui/*.rb',
     'examples/*.*', 'examples/res/*.*'
   ]
-  s.require_paths = ['lib']
-  s.add_runtime_dependency('ffi', '~> 1')
+  spec.require_paths = ['lib']
+  spec.add_runtime_dependency('ffi', '~> 1')
 end

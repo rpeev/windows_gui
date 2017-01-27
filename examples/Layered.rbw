@@ -44,7 +44,7 @@ end
 }
 
 def WinMain
-	WNDCLASSEX.new { |wc|
+	UsingFFIStructs(WNDCLASSEX.new) { |wc|
 		wc[:cbSize] = wc.size
 		wc[:lpfnWndProc] = WindowProc
 		wc[:hInstance] = GetModuleHandle(nil)
@@ -52,7 +52,7 @@ def WinMain
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
 		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
-		PWSTR(APPNAME) { |className|
+		UsingFFIMemoryPointers(PWSTR(APPNAME)) { |className|
 			wc[:lpszClassName] = className
 
 			DetonateLastError(0, :RegisterClassEx,
@@ -75,7 +75,7 @@ def WinMain
 	ShowWindow(hwnd, SW_SHOWNORMAL)
 	UpdateWindow(hwnd)
 
-	MSG.new { |msg|
+	UsingFFIStructs(MSG.new) { |msg|
 		until DetonateLastError(-1, :GetMessage,
 			msg, nil, 0, 0
 		) == 0

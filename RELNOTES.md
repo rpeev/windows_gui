@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.0
+
+Improve code (move additional functionality from FFI bindings to external functions)
+
 ## 3.0.2
 
 Add recent Windows version info

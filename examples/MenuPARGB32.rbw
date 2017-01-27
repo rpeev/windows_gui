@@ -22,58 +22,56 @@ def OnCreate(hwnd,
 		LR_LOADFROMFILE | LR_CREATEDIBSECTION
 	)
 
-	info = MENUITEMINFO.new
+	UsingFFIStructs(MENUITEMINFO.new) { |mii|
+		mii[:cbSize] = mii.size
+		mii[:fMask] = MIIM_BITMAP
+		mii[:hbmpItem] = xtra[:hbmp]
 
-	info[:cbSize] = info.size
-	info[:fMask] = MIIM_BITMAP
-	info[:hbmpItem] = xtra[:hbmp]
+		hbar = CreateMenu()
+			hmenu1 = CreatePopupMenu()
+				AppendMenu(hmenu1, MF_STRING, CMD[:ITEM1], L('Item&1'))
+				SetMenuDefaultItem(hmenu1, CMD[:ITEM1], 0)
+				SetMenuItemInfo(hmenu1, CMD[:ITEM1], 0, mii)
 
-	hbar = CreateMenu()
-		hmenu1 = CreatePopupMenu()
-			AppendMenu(hmenu1, MF_STRING, CMD[:ITEM1], L('Item&1'))
-			SetMenuDefaultItem(hmenu1, CMD[:ITEM1], 0)
-			SetMenuItemInfo(hmenu1, CMD[:ITEM1], 0, info)
+				AppendMenu(hmenu1, MF_STRING | MF_GRAYED, CMD[:ITEM2], L('Item&2'))
+				SetMenuItemInfo(hmenu1, CMD[:ITEM2], 0, mii)
 
-			AppendMenu(hmenu1, MF_STRING | MF_GRAYED, CMD[:ITEM2], L('Item&2'))
-			SetMenuItemInfo(hmenu1, CMD[:ITEM2], 0, info)
+				AppendMenu(hmenu1, MF_STRING | MF_CHECKED, CMD[:ITEM3], L('Item&3'))
+				SetMenuItemInfo(hmenu1, CMD[:ITEM3], 0, mii)
 
-			AppendMenu(hmenu1, MF_STRING | MF_CHECKED, CMD[:ITEM3], L('Item&3'))
-			SetMenuItemInfo(hmenu1, CMD[:ITEM3], 0, info)
+				AppendMenu(hmenu1, MF_SEPARATOR, 0, nil)
 
-			AppendMenu(hmenu1, MF_SEPARATOR, 0, nil)
+				AppendMenu(hmenu1, MF_STRING | MF_CHECKED | MFT_RADIOCHECK,
+					CMD[:ITEM4], L('Item&4'))
+				SetMenuItemInfo(hmenu1, CMD[:ITEM4], 0, mii)
 
-			AppendMenu(hmenu1, MF_STRING | MF_CHECKED | MFT_RADIOCHECK,
-				CMD[:ITEM4], L('Item&4'))
-			SetMenuItemInfo(hmenu1, CMD[:ITEM4], 0, info)
+				AppendMenu(hmenu1, MF_STRING, CMD[:ITEM5], L('Item&5'))
+				SetMenuItemInfo(hmenu1, CMD[:ITEM5], 0, mii)
 
-			AppendMenu(hmenu1, MF_STRING, CMD[:ITEM5], L('Item&5'))
-			SetMenuItemInfo(hmenu1, CMD[:ITEM5], 0, info)
+				AppendMenu(hmenu1, MF_SEPARATOR, 0, nil)
 
-			AppendMenu(hmenu1, MF_SEPARATOR, 0, nil)
+				hmenu2 = CreatePopupMenu()
+					AppendMenu(hmenu2, MF_STRING | MF_CHECKED | MFT_RADIOCHECK,
+						CMD[:ITEM6], L('Item&6'))
+					SetMenuItemInfo(hmenu2, CMD[:ITEM6], 0, mii)
 
-			hmenu2 = CreatePopupMenu()
-				AppendMenu(hmenu2, MF_STRING | MF_CHECKED | MFT_RADIOCHECK,
-					CMD[:ITEM6], L('Item&6'))
-				SetMenuItemInfo(hmenu2, CMD[:ITEM6], 0, info)
+					AppendMenu(hmenu2, MF_STRING, CMD[:ITEM7], L('Item&7'))
+					SetMenuItemInfo(hmenu2, CMD[:ITEM7], 0, mii)
+				AppendMenu(hmenu1, MF_POPUP, hmenu2.to_i, L('Menu&2'))
+				SetMenuItemInfo(hmenu1, 7, MF_BYPOSITION, mii)
+			AppendMenu(hbar, MF_POPUP, hmenu1.to_i, L('Menu&1'))
+			SetMenuItemInfo(hbar, 0, MF_BYPOSITION, mii)
 
-				AppendMenu(hmenu2, MF_STRING, CMD[:ITEM7], L('Item&7'))
-				SetMenuItemInfo(hmenu2, CMD[:ITEM7], 0, info)
-			AppendMenu(hmenu1, MF_POPUP, hmenu2.to_i, L('Menu&2'))
-			SetMenuItemInfo(hmenu1, 7, MF_BYPOSITION, info)
-		AppendMenu(hbar, MF_POPUP, hmenu1.to_i, L('Menu&1'))
-		SetMenuItemInfo(hbar, 0, MF_BYPOSITION, info)
+			AppendMenu(hbar, MF_STRING, CMD[:ITEM8], L('Item&8!'))
+			SetMenuItemInfo(hbar, CMD[:ITEM8], 0, mii)
 
-		AppendMenu(hbar, MF_STRING, CMD[:ITEM8], L('Item&8!'))
-		SetMenuItemInfo(hbar, CMD[:ITEM8], 0, info)
-
-		hmenu3 = CreatePopupMenu()
-			AppendMenu(hmenu3, MF_BITMAP, CMD[:ITEM9], xtra[:hbmp])
-		AppendMenu(hbar, MF_POPUP | MF_BITMAP | MF_RIGHTJUSTIFY, hmenu3.to_i, xtra[:hbmp])
-	SetMenu(hwnd, hbar)
+			hmenu3 = CreatePopupMenu()
+				AppendMenu(hmenu3, MF_BITMAP, CMD[:ITEM9], xtra[:hbmp])
+			AppendMenu(hbar, MF_POPUP | MF_BITMAP | MF_RIGHTJUSTIFY, hmenu3.to_i, xtra[:hbmp])
+		SetMenu(hwnd, hbar)
+	}
 
 	0
-ensure
-	info.pointer.free if info
 end
 
 def OnDestroy(hwnd)
@@ -255,7 +253,7 @@ end
 def WinMain
 	Id2RefTrack(xtra = WndExtra.new)
 
-	WNDCLASSEX.new { |wc|
+	UsingFFIStructs(WNDCLASSEX.new) { |wc|
 		wc[:cbSize] = wc.size
 		wc[:lpfnWndProc] = WindowProc
 		wc[:cbWndExtra] = FFI::Type::Builtin::POINTER.size
@@ -264,7 +262,7 @@ def WinMain
 		wc[:hCursor] = LoadCursor(nil, IDC_ARROW)
 		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
-		PWSTR(APPNAME) { |className|
+		UsingFFIMemoryPointers(PWSTR(APPNAME)) { |className|
 			wc[:lpszClassName] = className
 
 			DetonateLastError(0, :RegisterClassEx,
@@ -287,7 +285,7 @@ def WinMain
 	ShowWindow(hwnd, SW_SHOWNORMAL)
 	UpdateWindow(hwnd)
 
-	MSG.new { |msg|
+	UsingFFIStructs(MSG.new) { |msg|
 		until DetonateLastError(-1, :GetMessage,
 			msg, nil, 0, 0
 		) == 0

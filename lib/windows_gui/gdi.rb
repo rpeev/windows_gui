@@ -1,5 +1,6 @@
-require_relative 'common'
 if __FILE__ == $0
+	require_relative 'common'
+	require_relative 'libc'
 	require_relative 'kernel'
 end
 
@@ -25,7 +26,11 @@ module WindowsGUI
 		LOBYTE(rgb >> 16)
 	end
 
-	module_function :RGB, :GetRValue, :GetGValue, :GetBValue
+	module_function \
+		:RGB,
+		:GetRValue,
+		:GetGValue,
+		:GetBValue
 
 	attach_function :CreateCompatibleDC, [
 		:pointer
@@ -53,7 +58,8 @@ module WindowsGUI
 		-MulDiv(pointSize, DPIY, 72)
 	end
 
-	module_function :DPIAwareFontHeight
+	module_function \
+		:DPIAwareFontHeight
 
 	FW_DONTCARE = 0
 	FW_THIN = 100
@@ -102,8 +108,6 @@ module WindowsGUI
 	FF_DECORATIVE = 5 << 4
 
 	class LOGFONT < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:lfHeight, :long,
 			:lfWidth, :long,
@@ -143,8 +147,6 @@ module WindowsGUI
 	HS_DIAGCROSS = 5
 
 	class LOGBRUSH < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:lbStyle, :uint,
 			:lbColor, :ulong,
@@ -177,8 +179,6 @@ module WindowsGUI
 	PS_JOIN_ROUND = 0x0000_0000
 
 	class LOGPEN < FFI::Struct
-		extend AutoFFIStructClassSupport
-
 		layout \
 			:lopnStyle, :uint,
 			:lopnWidth, POINT,
@@ -367,7 +367,7 @@ module WindowsGUI
 		:pointer
 	], :pointer
 
-	def UseObjects(hdc, *hgdiobjs)
+	def UsingGDIObjects(hdc, *hgdiobjs)
 		holds = []
 
 		hgdiobjs.each { |hgdiobj|
@@ -376,14 +376,15 @@ module WindowsGUI
 			)
 		}
 
-		yield
+		yield(*hgdiobjs)
 	ensure
 		holds.each { |hgdiobj|
 			SelectObject(hdc, hgdiobj)
 		}
 	end
 
-	module_function :UseObjects
+	module_function \
+		:UsingGDIObjects
 
 	AD_COUNTERCLOCKWISE = 1
 	AD_CLOCKWISE = 2
