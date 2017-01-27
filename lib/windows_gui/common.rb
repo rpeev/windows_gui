@@ -64,6 +64,7 @@ module WindowsGUI
 		yield result if failed && block_given?
 	end
 
+	# TODO: GetLastError always returns 0
 	def DetonateLastError(on, name, *args)
 		result = send(name, *args)
 		failed = [*on].include?(result)

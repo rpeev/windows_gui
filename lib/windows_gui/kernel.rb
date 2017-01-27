@@ -30,6 +30,9 @@ module WindowsGUI
 			:wReserved, :uchar
 	end
 
+	# TODO: GetVersionEx is deprecated and will report WIN8 on later Windows versions
+	# unless a manifest file is used
+	# https://msdn.microsoft.com/en-us/library/windows/desktop/dn481241.aspx
 	attach_function :GetVersionEx, :GetVersionExW, [
 		OSVERSIONINFOEX.by_ref
 	], :int
