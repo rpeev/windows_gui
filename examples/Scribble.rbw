@@ -13,7 +13,7 @@ def OnCreate(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
-	LOGPEN.new { |lp|
+	UsingFFIStructs(LOGPEN.new) { |lp|
 		lp[:lopnWidth][:x] = DPIAwareX(10)
 		lp[:lopnColor] = RGB(255, 0, 0)
 
@@ -38,7 +38,7 @@ def OnPaint(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
-	UseObjects(ps[:hdc], xtra[:hpen]) {
+	UsingGDIObjects(ps[:hdc], xtra[:hpen]) {
 		xtra[:scribbles].each { |scribble|
 			MoveToEx(ps[:hdc], *scribble[0], nil)
 
@@ -61,7 +61,7 @@ def OnLButtonDown(hwnd,
 	xtra[:curpos] = [x, y]
 	xtra[:scribbles] << [[x, y]]
 
-	RECT.new { |rect|
+	UsingFFIStructs(RECT.new) { |rect|
 		SetRect(rect, x, y, x, y)
 		InflateRect(rect, *DPIAwareXY(5, 5))
 		InvalidateRect(hwnd, rect, 1)
@@ -87,8 +87,8 @@ def OnMouseMove(hwnd,
 
 	xtra[:scribbles].last << [x, y]
 
-	UseDC(hwnd) { |hdc|
-		UseObjects(hdc, xtra[:hpen]) {
+	UsingDC(hwnd) { |hdc|
+		UsingGDIObjects(hdc, xtra[:hpen]) {
 			MoveToEx(hdc, *xtra[:curpos], nil)
 			LineTo(hdc, x, y)
 
@@ -167,7 +167,7 @@ end
 def WinMain
 	Id2RefTrack(xtra = WndExtra.new)
 
-	WNDCLASSEX.new { |wc|
+	UsingFFIStructs(WNDCLASSEX.new) { |wc|
 		wc[:cbSize] = wc.size
 		wc[:lpfnWndProc] = WindowProc
 		wc[:cbWndExtra] = FFI::Type::Builtin::POINTER.size
@@ -176,7 +176,7 @@ def WinMain
 		wc[:hCursor] = LoadCursor(nil, IDC_CROSS)
 		wc[:hbrBackground] = FFI::Pointer.new(COLOR_WINDOW + 1)
 
-		PWSTR(APPNAME) { |className|
+		UsingFFIMemoryPointers(PWSTR(APPNAME)) { |className|
 			wc[:lpszClassName] = className
 
 			DetonateLastError(0, :RegisterClassEx,
@@ -199,7 +199,7 @@ def WinMain
 	ShowWindow(hwnd, SW_SHOWNORMAL)
 	UpdateWindow(hwnd)
 
-	MSG.new { |msg|
+	UsingFFIStructs(MSG.new) { |msg|
 		until DetonateLastError(-1, :GetMessage,
 			msg, nil, 0, 0
 		) == 0

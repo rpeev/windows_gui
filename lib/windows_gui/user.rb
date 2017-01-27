@@ -140,7 +140,7 @@ module WindowsGUI
 
 		Detonate(0, :SetProcessDPIAware)
 
-		STDERR.puts "DPI aware init"
+		STDERR.puts "DPI aware init" if $DEBUG
 	end
 
 	module_function \
