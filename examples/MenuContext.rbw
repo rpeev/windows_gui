@@ -30,7 +30,7 @@ def OnContextMenu(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
-	POINT.new { |point|
+	UsingFFIStructs(POINT.new) { |point|
 		GetCursorPos(point)
 
 		x, y = point.values

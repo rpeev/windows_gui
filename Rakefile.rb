@@ -1,6 +1,6 @@
 require 'rake/testtask'
 
-require_relative 'lib/windows_gui/common'
+require_relative 'lib/windows_gui'
 
 Rake::TestTask.new do |t|
   t.test_files = FileList[

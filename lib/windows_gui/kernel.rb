@@ -187,11 +187,9 @@ module WindowsGUI
 			ReleaseActCtx(COMMON_CONTROLS_ACTCTX[:handle]) unless
 				COMMON_CONTROLS_ACTCTX[:handle] == INVALID_HANDLE_VALUE
 
-			COMMON_CONTROLS_ACTCTX[:cookie].free unless
-				COMMON_CONTROLS_ACTCTX[:cookie] == FFI::Pointer::NULL
+			COMMON_CONTROLS_ACTCTX[:cookie].free
 
 			COMMON_CONTROLS_ACTCTX[:handle] = INVALID_HANDLE_VALUE
-			COMMON_CONTROLS_ACTCTX[:cookie] = FFI::Pointer::NULL
 			COMMON_CONTROLS_ACTCTX[:activated] = false
 
 			STDERR.puts "Visual styles cleanup (COMMON_CONTROLS_ACTCTX: #{COMMON_CONTROLS_ACTCTX})" if $DEBUG

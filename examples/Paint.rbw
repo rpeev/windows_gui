@@ -128,7 +128,7 @@ def WinMain
 
 	exit(0) if hwnd.null?
 
-	AnimateWindow(hwnd, 1000, AW_ACTIVATE | AW_BLEND)
+	AnimateWindow(hwnd, 5000, AW_ACTIVATE | AW_BLEND)
 
 	UsingFFIStructs(MSG.new) { |msg|
 		until DetonateLastError(-1, :GetMessage,
