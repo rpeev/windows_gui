@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.0.3
+
+Minor fixes
+
 ## 4.0.1
 
 Fix example and debug call
