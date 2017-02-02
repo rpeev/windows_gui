@@ -90,7 +90,7 @@ def OnCreate(hwnd,
 	xtra[:uich] = UICH.new(xtra[:uif])
 	xtra[:uia] = UIA.new(xtra[:uich])
 
-	xtra[:uif].Initialize(hwnd, xtra[:uia].vptr)
+	xtra[:uif].Initialize(hwnd, xtra[:uia])
 	xtra[:uif].LoadUI(LoadUIDll(), L('APPLICATION_RIBBON'))
 
 	0
