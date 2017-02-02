@@ -20,7 +20,8 @@ Gem::Specification.new do |spec|
     'RELNOTES.md',
     'lib/windows_gui.rb',
     'lib/windows_gui/*.rb',
-    'examples/*.*', 'examples/res/*.*'
+    'examples/*.*', 'examples/res/*.*',
+    'examples/UIRibbon/*.*'
   ]
   spec.require_paths = ['lib']
   spec.add_runtime_dependency('ffi', '~> 1')

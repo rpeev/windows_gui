@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.1.0
+
+Add UIRibbon FFI bindings plus example (requires windows_com gem)
+
 ## 4.0.3
 
 Minor fixes
