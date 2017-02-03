@@ -10,4 +10,4 @@ gem install windows_gui
 
 ## Use
 
-See examples folder
+See examples folder (the UIRibbon example requires windows_com gem)

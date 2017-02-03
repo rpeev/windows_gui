@@ -1,7 +1,8 @@
 #WINDOWS_COM_TRACE_CALLBACK_REFCOUNT = true
+#WINDOWS_COM_TRACE_CALL_ARGS = true
 
 require 'windows_gui'
-require 'windows_gui/uiribbon' # requires windows_com gem
+require 'windows_gui/uiribbon'
 
 include WindowsGUI
 include UIRibbon
