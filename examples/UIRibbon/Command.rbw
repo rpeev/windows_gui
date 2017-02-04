@@ -26,6 +26,16 @@ class UICH < IUICommandHandlerImpl
 
 	attr_reader :uif
 
+	def OnAOT(*args)
+		UsingFFIStructs(PROPVARIANT.new) { |v|
+			uif.GetUICommandProperty(CmdAOT, UI_PKEY_BooleanValue, v)
+
+			SetWindowPos(uif.hwnd,
+				(v[:boolVal] == -1) ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE
+			)
+		}
+	end
+
 	def OnItem1(*args)
 		MessageBox(uif.hwnd,
 			L("#{self}.#{__method__}"),
@@ -50,6 +60,8 @@ class UICH < IUICommandHandlerImpl
 
 	def Execute(*args)
 		case args[0]
+		when CmdAOT
+			OnAOT(*args)
 		when CmdItem1
 			OnItem1(*args)
 		when CmdButton1
@@ -87,12 +99,18 @@ def OnCreate(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
+	UIResources.Build(clean: true) if UIResources.BuildNeeded?()
+
 	xtra[:uif] = UIF.new(hwnd)
 	xtra[:uich] = UICH.new(xtra[:uif])
 	xtra[:uia] = UIA.new(xtra[:uich])
 
 	xtra[:uif].Initialize(hwnd, xtra[:uia])
-	xtra[:uif].LoadUI(LoadUIDll(), L('APPLICATION_RIBBON'))
+	xtra[:uif].LoadUI(UIResources.Load(), L('APPLICATION_RIBBON'))
+
+	UsingFFIStructs(PROPVARIANT[VT_BOOL, :boolVal, -1]) { |v|
+		xtra[:uif].SetUICommandProperty(CmdAOT, UI_PKEY_BooleanValue, v)
+	}
 
 	0
 end
@@ -179,6 +197,7 @@ def WinMain
 	exit(0) if hwnd.null?
 
 	ShowWindow(hwnd, SW_SHOWNORMAL)
+	SetWindowPos(hwnd, HWND_TOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE)
 	UpdateWindow(hwnd)
 
 	UsingFFIStructs(MSG.new) { |msg|

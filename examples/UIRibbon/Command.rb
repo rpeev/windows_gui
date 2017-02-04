@@ -28,3 +28,7 @@ CmdButton1_SmallImages_RESID = 60019
 CmdButton1_SmallImages_120__RESID = 60020
 CmdButton1_LargeImages_RESID = 60021
 CmdButton1_LargeImages_120__RESID = 60022
+CmdAOT = 8
+CmdAOT_LabelTitle_RESID = 60023
+CmdAOT_LabelDescription_RESID = 60024
+CmdAOT_TooltipDescription_RESID = 60025

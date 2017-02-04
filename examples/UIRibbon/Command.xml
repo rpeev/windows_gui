@@ -8,35 +8,38 @@
 <Command Name='cmdTab1' LabelTitle='Tab1' />
 	<Command Name='cmdTab1Group1' LabelTitle='&amp;Group1' LabelDescription='LabelDescription...' TooltipDescription='TooltipDescription...'>
 		<Command.SmallImages>
-			<Image>../../res/go-next-small.bmp</Image>
-			<Image MinDPI='120'>../../res/go-next.bmp</Image>
+			<Image>../res/go-next-small.bmp</Image>
+			<Image MinDPI='120'>../res/go-next.bmp</Image>
 		</Command.SmallImages>
 		<Command.LargeImages>
-			<Image>../../res/go-next.bmp</Image>
-			<Image MinDPI='120'>../../res/go-next-big.bmp</Image>
+			<Image>../res/go-next.bmp</Image>
+			<Image MinDPI='120'>../res/go-next-big.bmp</Image>
 		</Command.LargeImages>
 	</Command>
 
 <Command Name='cmdItem1' LabelTitle='&amp;Item1' LabelDescription='LabelDescription...' TooltipDescription='TooltipDescription...'>
 	<Command.SmallImages>
-		<Image>../../res/go-previous-small.bmp</Image>
-		<Image MinDPI='120'>../../res/go-previous.bmp</Image>
+		<Image>../res/go-previous-small.bmp</Image>
+		<Image MinDPI='120'>../res/go-previous.bmp</Image>
 	</Command.SmallImages>
 	<Command.LargeImages>
-		<Image>../../res/go-previous.bmp</Image>
-		<Image MinDPI='120'>../../res/go-previous-big.bmp</Image>
+		<Image>../res/go-previous.bmp</Image>
+		<Image MinDPI='120'>../res/go-previous-big.bmp</Image>
 	</Command.LargeImages>
 </Command>
 
 <Command Name='cmdButton1' LabelTitle='&amp;Button1' LabelDescription='LabelDescription...' TooltipDescription='TooltipDescription...'>
 	<Command.SmallImages>
-		<Image>../../res/go-next-small.bmp</Image>
-		<Image MinDPI='120'>../../res/go-next.bmp</Image>
+		<Image>../res/go-next-small.bmp</Image>
+		<Image MinDPI='120'>../res/go-next.bmp</Image>
 	</Command.SmallImages>
 	<Command.LargeImages>
-		<Image>../../res/go-next.bmp</Image>
-		<Image MinDPI='120'>../../res/go-next-big.bmp</Image>
+		<Image>../res/go-next.bmp</Image>
+		<Image MinDPI='120'>../res/go-next-big.bmp</Image>
 	</Command.LargeImages>
+</Command>
+
+<Command Name='cmdAOT' LabelTitle='&amp;Always On Top' LabelDescription='LabelDescription...' TooltipDescription='TooltipDescription...'>
 </Command>
 	</Application.Commands>
 
@@ -53,6 +56,7 @@
 			<Ribbon.QuickAccessToolbar>
 <QuickAccessToolbar CommandName='cmdQAT'>
 	<QuickAccessToolbar.ApplicationDefaults>
+		<CheckBox CommandName='cmdAOT' />
 		<Button CommandName='cmdItem1' />
 		<Button CommandName='cmdButton1' />
 	</QuickAccessToolbar.ApplicationDefaults>
