@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.2.0
+
+Add crude mechanism for building UIRibbon resources on the fly (requires devenv)
+
 ## 4.1.0
 
 Add UIRibbon FFI bindings plus example (requires windows_com gem)
