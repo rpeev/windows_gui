@@ -17,6 +17,17 @@
 		</Command.LargeImages>
 	</Command>
 
+<Command Name='cmdAOT' LabelTitle='&amp;Always On Top' LabelDescription='Toggle Always On Top state' TooltipDescription='Toggle Always On Top state'>
+	<Command.SmallImages>
+		<Image>../res/go-top-small.bmp</Image>
+		<Image MinDPI='120'>../res/go-top.bmp</Image>
+	</Command.SmallImages>
+	<Command.LargeImages>
+		<Image>../res/go-top.bmp</Image>
+		<Image MinDPI='120'>../res/go-top-big.bmp</Image>
+	</Command.LargeImages>
+</Command>
+
 <Command Name='cmdItem1' LabelTitle='&amp;Item1' LabelDescription='LabelDescription...' TooltipDescription='TooltipDescription...'>
 	<Command.SmallImages>
 		<Image>../res/go-previous-small.bmp</Image>
@@ -38,9 +49,6 @@
 		<Image MinDPI='120'>../res/go-next-big.bmp</Image>
 	</Command.LargeImages>
 </Command>
-
-<Command Name='cmdAOT' LabelTitle='&amp;Always On Top' LabelDescription='LabelDescription...' TooltipDescription='TooltipDescription...'>
-</Command>
 	</Application.Commands>
 
 	<Application.Views>
@@ -56,7 +64,7 @@
 			<Ribbon.QuickAccessToolbar>
 <QuickAccessToolbar CommandName='cmdQAT'>
 	<QuickAccessToolbar.ApplicationDefaults>
-		<CheckBox CommandName='cmdAOT' />
+		<ToggleButton CommandName='cmdAOT' />
 		<Button CommandName='cmdItem1' />
 		<Button CommandName='cmdButton1' />
 	</QuickAccessToolbar.ApplicationDefaults>
