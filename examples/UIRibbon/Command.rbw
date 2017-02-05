@@ -27,13 +27,13 @@ class UICH < IUICommandHandlerImpl
 	attr_reader :uif
 
 	def OnAOT(*args)
-		UsingFFIStructs(PROPVARIANT.new) { |v|
-			uif.GetUICommandProperty(CmdAOT, UI_PKEY_BooleanValue, v)
+		aot = PROPVARIANT[VT_BOOL, :boolVal, 0]
 
-			SetWindowPos(uif.hwnd,
-				(v[:boolVal] == -1) ? HWND_TOPMOST : HWND_NOTOPMOST, 0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE
-			)
-		}
+		uif.GetUICommandProperty(CmdAOT, UI_PKEY_BooleanValue, aot)
+		SetWindowPos(uif.hwnd,
+			(aot[:boolVal] == -1) ? HWND_TOPMOST : HWND_NOTOPMOST,
+			0, 0, 0, 0, SWP_NOMOVE | SWP_NOSIZE
+		)
 	end
 
 	def OnItem1(*args)
@@ -108,9 +108,7 @@ def OnCreate(hwnd,
 	xtra[:uif].Initialize(hwnd, xtra[:uia])
 	xtra[:uif].LoadUI(UIResources.Load(), L('APPLICATION_RIBBON'))
 
-	UsingFFIStructs(PROPVARIANT[VT_BOOL, :boolVal, -1]) { |v|
-		xtra[:uif].SetUICommandProperty(CmdAOT, UI_PKEY_BooleanValue, v)
-	}
+	xtra[:uif].SetUICommandProperty(CmdAOT, UI_PKEY_BooleanValue, PROPVARIANT[VT_BOOL, :boolVal, -1])
 
 	0
 end
