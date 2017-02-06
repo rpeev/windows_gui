@@ -11,7 +11,7 @@ class UIF < UIFramework
 	def initialize(hwnd)
 		@hwnd = hwnd
 
-		super()
+		super() # wire COM stuff
 	end
 
 	attr_reader :hwnd
@@ -21,7 +21,7 @@ class UICH < IUICommandHandlerImpl
 	def initialize(uif)
 		@uif = uif
 
-		super()
+		super() # wire COM stuff
 	end
 
 	attr_reader :uif
@@ -58,6 +58,8 @@ class UICH < IUICommandHandlerImpl
 		uif.SetUICommandProperty(CmdButton1, UI_PKEY_Enabled, PROPVARIANT[VT_BOOL, :boolVal, 0])
 	end
 
+	# COM interface method implementations
+
 	def Execute(*args)
 		case args[0]
 		when CmdAOT
@@ -76,10 +78,12 @@ class UIA < IUIApplicationImpl
 	def initialize(uich)
 		@uich = uich
 
-		super()
+		super() # wire COM stuff
 	end
 
 	attr_reader :uich
+
+	# COM interface method implementations
 
 	def OnCreateUICommand(*args)
 		uich.QueryInterface(uich.class::IID, args[-1])
@@ -99,6 +103,8 @@ def OnCreate(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
+	# attempt to build UIRibbon resources if the resource dll is missing or UIRibbon description xml file newer than it exists
+	# (requires installed development environment (Visual Studio Express will do))
 	UIResources.Build(clean: true) if UIResources.BuildNeeded?()
 
 	xtra[:uif] = UIF.new(hwnd)
