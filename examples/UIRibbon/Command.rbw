@@ -103,8 +103,9 @@ def OnCreate(hwnd,
 )
 	xtra = Id2Ref[GetWindowLong(hwnd, GWL_USERDATA)]
 
-	# attempt to build UIRibbon resources if the resource dll is missing or UIRibbon description xml file newer than it exists
-	# (requires installed development environment (Visual Studio Express will do))
+	# attempt to build UIRibbon resources if the resource dll is missing
+	# or UIRibbon description xml file exists and is newer than the resource dll
+	# (requires installed developement environment (Visual Studio Express will do))
 	UIResources.Build(clean: true) if UIResources.BuildNeeded?()
 
 	xtra[:uif] = UIF.new(hwnd)
