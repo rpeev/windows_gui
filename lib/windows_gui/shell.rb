@@ -24,7 +24,7 @@ module WindowsGUI
 		:buffer_in,
 		:buffer_in,
 		:buffer_in,
-    :buffer_in,
+		:buffer_in,
 		:int
 	], :int
 end
