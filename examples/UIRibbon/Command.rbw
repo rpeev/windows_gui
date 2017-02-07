@@ -107,10 +107,7 @@ def OnCreate(hwnd,
 	# attempt to build UIRibbon resources if the resource dll is missing
 	# or UIRibbon description xml file exists and is newer than the resource dll
 	# (requires installed developement environment (Visual Studio Express will do))
-	UIResources.Build(
-		clean_byproducts: true,
-		open_log_if_failed: true
-	) if UIResources.BuildNeeded?()
+	UIResources.Build(clean: true, showLog: true) if UIResources.BuildNeeded?()
 
 	xtra[:uif] = UIF.new(hwnd)
 	xtra[:uich] = UICH.new(xtra[:uif])

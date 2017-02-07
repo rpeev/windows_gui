@@ -66,7 +66,7 @@ call "#{opts[:vcvars]}" >> "#{opts[:name]}.log" && \
 
 				if File.read(log_path) =~ /error/im
 					ShellExecute(nil, L('open'), L(log_path.dup), nil, nil, SW_SHOWNORMAL) if
-						opts[:open_log_if_failed]
+						opts[:showLog]
 
 					raise "UIRibbon resources build FAILED - see #{log_path} for details"
 				end
@@ -81,7 +81,7 @@ call "#{opts[:vcvars]}" >> "#{opts[:name]}.log" && \
 
 				%w{bml h rc}.each { |ext|
 					File.delete("#{path}/#{opts[:name]}.#{ext}") if File.exist?("#{path}/#{opts[:name]}.#{ext}")
-				} if opts[:clean_byproducts]
+				} if opts[:clean]
 
 				STDERR.puts "UIRibbon resources build succeeded"
 			end
