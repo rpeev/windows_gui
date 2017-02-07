@@ -2,6 +2,7 @@
 #WINDOWS_COM_TRACE_CALL_ARGS = true
 
 require 'windows_gui'
+require 'windows_gui/shell'
 require 'windows_gui/uiribbon'
 
 include WindowsGUI
@@ -106,7 +107,10 @@ def OnCreate(hwnd,
 	# attempt to build UIRibbon resources if the resource dll is missing
 	# or UIRibbon description xml file exists and is newer than the resource dll
 	# (requires installed developement environment (Visual Studio Express will do))
-	UIResources.Build(clean: true) if UIResources.BuildNeeded?()
+	UIResources.Build(
+		clean_byproducts: true,
+		open_log_if_failed: true
+	) if UIResources.BuildNeeded?()
 
 	xtra[:uif] = UIF.new(hwnd)
 	xtra[:uich] = UICH.new(xtra[:uif])
