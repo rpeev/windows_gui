@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.2.2
+
+Tweak UIRibbon resources build options names
+
 ## 4.2.1
 
 Add ShellExecute bindings and option to open the UIRibbon resources build log on build failure
