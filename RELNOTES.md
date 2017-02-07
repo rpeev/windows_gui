@@ -1,5 +1,9 @@
 # Release Notes
 
+## 4.2.1
+
+Add ShellExecute bindings and option to open the UIRibbon resources build log on build failure
+
 ## 4.2.0
 
 Add crude mechanism for building UIRibbon resources on the fly (requires devenv)
