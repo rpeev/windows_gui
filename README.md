@@ -1,4 +1,4 @@
-# windows_gui
+# WindowsGUI
 
 Ruby FFI (x86) bindings to essential GUI related Windows APIs
 
